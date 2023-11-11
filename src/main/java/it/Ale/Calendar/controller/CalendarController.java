@@ -52,4 +52,12 @@ public class CalendarController {
         return ResponseEntity.ok(calendarService.save(userId, calendar));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Calendar calendar) {
+        if (calendarService.findById(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(calendarService.update(id, calendar));
+    }
+
 }

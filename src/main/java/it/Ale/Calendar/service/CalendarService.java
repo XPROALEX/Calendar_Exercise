@@ -38,9 +38,6 @@ public class CalendarService {
         return calendarRepository.findById(id);
     }
 
-    public void deleteById(long id) {
-        calendarRepository.deleteById(id);
-    }
 
     public Calendar update(long id, Calendar updateCalendar) {
         Calendar existingCalendar = calendarRepository.findById(id).get();
