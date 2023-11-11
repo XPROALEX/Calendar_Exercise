@@ -39,16 +39,19 @@ public class CalendarService {
     }
 
 
-    public Calendar update(long id, Calendar updateCalendar) {
+    public Calendar update(long userId, long id, Calendar updateCalendar) {
+        Optional<User> userOptional = userRepository.findById(userId);
         Calendar existingCalendar = calendarRepository.findById(id).get();
-        if (existingCalendar != null) {
-            if (updateCalendar.getName() != null) {
-                existingCalendar.setName(updateCalendar.getName());
+        if (userOptional.isPresent()) {
+            if (existingCalendar != null && existingCalendar.getOwner().getId() == userId) {
+                if (updateCalendar.getName() != null) {
+                    existingCalendar.setName(updateCalendar.getName());
+                }
+                if (updateCalendar.getDescription() != null) {
+                    existingCalendar.setDescription(updateCalendar.getDescription());
+                }
+                return calendarRepository.save(existingCalendar);
             }
-            if (updateCalendar.getDescription() != null) {
-                existingCalendar.setDescription(updateCalendar.getDescription());
-            }
-            return calendarRepository.save(existingCalendar);
         }
         return null;
     }

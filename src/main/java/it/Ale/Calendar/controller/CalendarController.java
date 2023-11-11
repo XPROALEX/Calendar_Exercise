@@ -52,12 +52,22 @@ public class CalendarController {
         return ResponseEntity.ok(calendarService.save(userId, calendar));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Calendar calendar) {
-        if (calendarService.findById(id).isEmpty()) {
+    /*
+    Put Edit Calendar
+    url /calendar/{id}
+    Json
+    {
+        "name": "name",
+        "description": "description"
+    }
+     */
+    @PutMapping("/{userId}/{id}")
+    public ResponseEntity<?> update(@PathVariable long userId, @PathVariable Long id, @RequestBody Calendar calendar) {
+        Calendar modifiedCalendar = calendarService.update(userId, id, calendar);
+        if (modifiedCalendar == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(calendarService.update(id, calendar));
+        return ResponseEntity.ok(modifiedCalendar);
     }
 
 }
