@@ -8,4 +8,7 @@ import org.springframework.stereotype.Service;
 public class CalendarService {
     @Autowired
     CalendarRepository calendarRepository;
+    private void save() {
+
+    }
 }

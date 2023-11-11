@@ -1,33 +1,44 @@
 package it.Ale.Calendar.entity;
 
-import it.Ale.Calendar.dto.ContactDto;
-import it.Ale.Calendar.dto.EventDto;
-import it.Ale.Calendar.dto.UserDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "user",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"email"}),
+                @UniqueConstraint(columnNames = {"name"})}
+)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    @JsonIgnore
+    private Long id;
     private String name;
     private String email;
+    @JsonIgnore
     private String password;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Calendar> calendars;
-    private List<ContactDto> contacts;
-    private List<Event> events;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_contacts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "contact_id"))
+    private Set<User> contacts;
 
     public User() {
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -54,4 +65,21 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public List<Calendar> getCalendars() {
+        return calendars;
+    }
+
+    public void setCalendars(List<Calendar> calendars) {
+        this.calendars = calendars;
+    }
+
+    public Set<User> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(Set<User> contacts) {
+        this.contacts = contacts;
+    }
 }
+

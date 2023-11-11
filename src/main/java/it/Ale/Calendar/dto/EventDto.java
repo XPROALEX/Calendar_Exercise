@@ -9,7 +9,6 @@ public class EventDto {
     private LocalDate end;
 
     public EventDto() {
-
     }
 
     public String getName() {

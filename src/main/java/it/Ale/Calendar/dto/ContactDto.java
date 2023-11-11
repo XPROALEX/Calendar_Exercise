@@ -5,7 +5,6 @@ public class ContactDto {
     private String email;
 
     public ContactDto() {
-
     }
 
     public String getName() {

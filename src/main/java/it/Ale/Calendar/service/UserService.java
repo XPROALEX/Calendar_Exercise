@@ -1,5 +1,6 @@
 package it.Ale.Calendar.service;
 
+import it.Ale.Calendar.dto.ContactDto;
 import it.Ale.Calendar.dto.UserDto;
 import it.Ale.Calendar.entity.User;
 import it.Ale.Calendar.repository.UserRepository;
@@ -29,15 +30,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void deleteByid(int id) {
+    public void deleteByid(long id) {
         userRepository.deleteById(id);
     }
 
-    public Optional<User> findById(int id) {
+    public Optional<User> findById(long id) {
         return userRepository.findById(id);
     }
 
-    public User update(int id, UserDto userDto) {
+    public User update(long id, UserDto userDto) {
         User existingUser = userRepository.findById(id).get();
         if (existingUser == null) {
             return null;
@@ -58,4 +59,17 @@ public class UserService {
         return null;
     }
 
+    public void addContact(long id, ContactDto contactDto) {
+        User user = userRepository.findById(id).get();
+        User contact = userRepository.findByEmail(contactDto.getEmail()).get();
+        if (contact != null) {
+            user.getContacts().add(contact);
+            userRepository.save(user);
+        }
+    }
+
+    public Iterable<User> getContacts(long id) {
+        User user = userRepository.findById(id).get();
+        return user.getContacts();
+    }
 }
