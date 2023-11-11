@@ -54,7 +54,7 @@ public class CalendarController {
 
     /*
     Put Edit Calendar
-    url /calendar/{id}
+    url /calendar/{userId}/{id}
     Json
     {
         "name": "name",
