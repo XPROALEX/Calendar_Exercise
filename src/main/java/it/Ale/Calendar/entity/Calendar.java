@@ -1,5 +1,6 @@
 package it.Ale.Calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -11,13 +12,12 @@ public class Calendar {
     private Long id;
     private String name;
     private String description;
-
+    @JsonIgnore
     @ManyToOne
     private User owner;
 
     @OneToMany(mappedBy = "calendar")
     private List<Event> events;
-
 
     public Calendar() {
     }

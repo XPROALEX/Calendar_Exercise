@@ -1,5 +1,6 @@
 package it.Ale.Calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ public class Event {
     private String description;
     private LocalDate start;
     private LocalDate end;
+    @JsonIgnore
     @ManyToOne
     private Calendar calendar;
     @ManyToMany

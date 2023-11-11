@@ -1,6 +1,7 @@
 package it.Ale.Calendar.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.Ale.Calendar.dto.ContactDto;
 import jakarta.persistence.*;
 
 import java.util.List;
