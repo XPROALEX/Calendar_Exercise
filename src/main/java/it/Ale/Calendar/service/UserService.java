@@ -2,12 +2,13 @@ package it.Ale.Calendar.service;
 
 import it.Ale.Calendar.dto.ContactDto;
 import it.Ale.Calendar.dto.UserDto;
+import it.Ale.Calendar.entity.Calendar;
 import it.Ale.Calendar.entity.User;
 import it.Ale.Calendar.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -22,11 +23,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User save(UserDto userDto) {
-        User user = new User();
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+    public User save(User user) {
+        Calendar calendar = new Calendar();
+        calendar.setName("privato");
+        calendar.setDescription("primo calendario utente");
+        user.getCalendars().add(calendar);
+        calendar.setOwner(user);
         return userRepository.save(user);
     }
 
@@ -38,38 +40,65 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User update(long id, UserDto userDto) {
+    public UserDto findByIdDto(long id) {
+        UserDto userDto = new UserDto();
+        User user = userRepository.findById(id).get();
+        userDto.setName(user.getName());
+        userDto.setEmail(user.getEmail());
+        userDto.setCalendars(user.getCalendars());
+        userDto.setEvents(user.getEvents());
+        user.getContacts().forEach(x -> {
+            ContactDto contactDto = new ContactDto();
+            contactDto.setEmail(x.getEmail());
+            contactDto.setName(x.getName());
+            userDto.getContacts().add(contactDto);
+        });
+        return userDto;
+
+    }
+
+
+    public User update(long id, User user) {
         User existingUser = userRepository.findById(id).get();
         if (existingUser == null) {
             return null;
         }
         if (existingUser != null) {
-            User user = userRepository.findById(id).get();
-            if (userDto.getName() != null) {
-                user.setName(userDto.getName());
+            User editUser = userRepository.findById(id).get();
+            if (user.getName() != null) {
+                editUser.setName(user.getName());
             }
-            if (userDto.getEmail() != null) {
-                user.setEmail(userDto.getEmail());
+            if (user.getEmail() != null) {
+                editUser.setEmail(user.getEmail());
             }
-            if (userDto.getPassword() != null) {
-                user.setPassword(userDto.getPassword());
+            if (user.getPassword() != null) {
+                editUser.setPassword(user.getPassword());
             }
-            return userRepository.save(user);
+            return userRepository.save(editUser);
         }
         return null;
     }
 
-    public void addContact(long id, ContactDto contactDto) {
+    public void addContact(long id, String email) {
         User user = userRepository.findById(id).get();
-        User contact = userRepository.findByEmail(contactDto.getEmail()).get();
-        if (contact != null) {
+        User contact = userRepository.findByEmail(email).get();
+        if (!user.getContacts().contains(contact) && contact != null) {
             user.getContacts().add(contact);
             userRepository.save(user);
-        }
+        } else throw new RuntimeException("Contact already exists");
     }
 
-    public Iterable<User> getContacts(long id) {
-        User user = userRepository.findById(id).get();
-        return user.getContacts();
+    public Iterable<ContactDto> getContactsDto(long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            Set<ContactDto> contactsDto = new HashSet<>();
+            user.get().getContacts().forEach(x -> {
+                ContactDto contactDto = new ContactDto();
+                contactDto.setEmail(x.getEmail());
+                contactDto.setName(x.getName());
+                contactsDto.add(contactDto);
+            });
+            return contactsDto;
+        } else return Collections.emptySet();
     }
 }

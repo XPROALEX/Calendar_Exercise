@@ -2,7 +2,9 @@ package it.Ale.Calendar.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -10,14 +12,16 @@ public class Calendar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
+    @Size(min = 2, max = 10)
     private String name;
     private String description;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
-
-    @OneToMany(mappedBy = "calendar")
-    private List<Event> events;
+    @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events = new LinkedList<>();
 
     public Calendar() {
     }

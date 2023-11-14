@@ -1,25 +1,39 @@
 package it.Ale.Calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
     private String description;
-    private LocalDate start;
-    private LocalDate end;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    @Column(nullable = false)
+    private LocalDateTime start;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    @Column(nullable = false)
+    private LocalDateTime end;
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "calendar_id", nullable = false)
     private Calendar calendar;
+    private String[] recurrence;
+    @JsonIgnore
     @ManyToMany
-    private List<User> participants;
+    @JoinTable(name = "event_participants",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> participants = new HashSet<>();
+
 
     public Event() {
     }
@@ -48,19 +62,19 @@ public class Event {
         this.description = description;
     }
 
-    public LocalDate getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(LocalDate start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    public LocalDate getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(LocalDate end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
     }
 
@@ -72,11 +86,17 @@ public class Event {
         this.calendar = calendar;
     }
 
-    public List<User> getParticipants() {
+    public Set<User> getUsers() {
         return participants;
     }
 
-    public void setParticipants(List<User> participants) {
-        this.participants = participants;
+    public void setUsers(Set<User> users) {
+        this.participants = users;
     }
+
+    public void addParticipant(User user) {
+        this.participants.add(user);
+        user.getEvents().add(this);
+    }
+
 }

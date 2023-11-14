@@ -1,12 +1,19 @@
 package it.Ale.Calendar.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class EventDto {
     private String name;
     private String description;
-    private LocalDate start;
-    private LocalDate end;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    private LocalDateTime start;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    private LocalDateTime end;
+    private long[] partecipantsId;
 
     public EventDto() {
     }
@@ -27,19 +34,27 @@ public class EventDto {
         this.description = description;
     }
 
-    public LocalDate getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(LocalDate start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    public LocalDate getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(LocalDate end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
+    }
+
+    public long[] getPartecipantsId() {
+        return partecipantsId;
+    }
+
+    public void setPartecipantsId(long[] partecipantsId) {
+        this.partecipantsId = partecipantsId;
     }
 }

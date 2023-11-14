@@ -69,5 +69,12 @@ public class CalendarController {
         }
         return ResponseEntity.ok(modifiedCalendar);
     }
-
+@DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        if (calendarService.findById(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        calendarService.deleteByid(id);
+        return ResponseEntity.ok().build();
+    }
 }

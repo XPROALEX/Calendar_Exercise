@@ -28,23 +28,11 @@ url /user
     url /user/{id}
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable int id) {
-        if (userService.findById(id).isEmpty()) {
+    public ResponseEntity<?> findById(@PathVariable long id) {
+        if (userService.findByIdDto(id)==null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(userService.findById(id));
-    }
-
-    /*
-    Get user by email
-    url /user/{email}
-     */
-    @GetMapping("/{email}")
-    public ResponseEntity<?> findByEmail(@PathVariable String email) {
-        if (userService.findByEmail(email).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else
-            return ResponseEntity.ok().body(userService.findByEmail(email));
+        return ResponseEntity.ok().body(userService.findByIdDto(id));
     }
 
     /*
@@ -69,8 +57,8 @@ url /user
         "password": "password"}
      */
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody UserDto userDto) {
-        return ResponseEntity.ok().body(userService.save(userDto));
+    public ResponseEntity<?> save(@RequestBody User user) {
+        return ResponseEntity.ok().body(userService.save(user));
     }
 
     /*
@@ -84,8 +72,8 @@ url /user
     }
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable long id, @RequestBody UserDto userDto) {
-        User editUser = userService.update(id, userDto);
+    public ResponseEntity<?> update(@PathVariable long id, @RequestBody User user) {
+        User editUser = userService.update(id, user);
         if (editUser == null) {
             return ResponseEntity.notFound().build();
         }
@@ -101,10 +89,9 @@ url /user
     }
      */
     @PutMapping("{id}/contacts")
-    public ResponseEntity<?> addContact(@PathVariable int id, @RequestBody ContactDto contact) {
-        User user = userService.findById(id).get();
-        userService.addContact(id, contact);
-        return ResponseEntity.ok().body(user.getContacts());
+    public ResponseEntity<?> addContact(@PathVariable int id, @RequestBody String email) {
+        userService.addContact(id,email);
+        return ResponseEntity.ok().build();
     }
     /*
     Get Contacts
@@ -114,7 +101,6 @@ url /user
 
     @GetMapping("{id}/contacts")
     public ResponseEntity<?> getContacts(@PathVariable int id) {
-        User user = userService.findById(id).get();
-        return ResponseEntity.ok().body(user.getContacts());
+        return ResponseEntity.ok().body(userService.getContactsDto(id));
     }
 }

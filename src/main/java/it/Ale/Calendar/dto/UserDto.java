@@ -1,9 +1,17 @@
 package it.Ale.Calendar.dto;
 
+import it.Ale.Calendar.entity.Calendar;
+import it.Ale.Calendar.entity.Event;
+import it.Ale.Calendar.entity.User;
+
+import java.util.*;
+
 public class UserDto {
     private String name;
     private String email;
-    private String password;
+    private Set<Calendar> calendars;
+    private Set<ContactDto> contacts =new HashSet<>();
+    private Set<Event> events = new HashSet<>();
 
     public UserDto() {
     }
@@ -24,11 +32,28 @@ public class UserDto {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public Set<Calendar> getCalendars() {
+        return calendars;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setCalendars(Set<Calendar> calendars) {
+        this.calendars = calendars;
     }
+
+    public Set<ContactDto> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(Set<ContactDto> contacts) {
+        this.contacts = contacts;
+    }
+
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
+    }
+
 }
