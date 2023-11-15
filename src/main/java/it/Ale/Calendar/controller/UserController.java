@@ -89,7 +89,7 @@ url /user
     }
      */
     @PutMapping("{id}/contacts")
-    public ResponseEntity<?> addContact(@PathVariable int id, @RequestBody String email) {
+    public ResponseEntity<?> addContact(@PathVariable int id, @RequestBody ContactDto email) {
         userService.addContact(id,email);
         return ResponseEntity.ok().build();
     }

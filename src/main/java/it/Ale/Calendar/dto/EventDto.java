@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-public class EventDto {
+public class  EventDto {
     private String name;
     private String description;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")

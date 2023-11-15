@@ -13,19 +13,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
+
     @Column(unique = true, nullable = false)
     private String name;
+
     @Column(unique = true, nullable = false)
     @Email(message = "Invalid email")
     private String email;
+
     @Column(nullable = false)
 //    @Pattern(message = "Invalid password", regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
     private String password;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Calendar> calendars = new HashSet<>();
+
     @JsonIgnore
     @ManyToMany(mappedBy = "participants", cascade = CascadeType.ALL)
     private Set<Event> events = new HashSet<>();
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_contacts",
             joinColumns = @JoinColumn(name = "user_id"),

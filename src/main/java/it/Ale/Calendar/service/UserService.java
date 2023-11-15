@@ -79,15 +79,14 @@ public class UserService {
         return null;
     }
 
-    public void addContact(long id, String email) {
+    public void addContact(long id, ContactDto contactDto) {
         User user = userRepository.findById(id).get();
-        User contact = userRepository.findByEmail(email).get();
+        User contact = userRepository.findByEmail(contactDto.getEmail()).get();
         if (!user.getContacts().contains(contact) && contact != null) {
             user.getContacts().add(contact);
             userRepository.save(user);
         } else throw new RuntimeException("Contact already exists");
     }
-
     public Iterable<ContactDto> getContactsDto(long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {

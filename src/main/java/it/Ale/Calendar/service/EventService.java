@@ -1,52 +1,49 @@
 package it.Ale.Calendar.service;
 
 import it.Ale.Calendar.dto.EventDto;
+import it.Ale.Calendar.entity.Attendee;
 import it.Ale.Calendar.entity.Event;
 import it.Ale.Calendar.entity.User;
+import it.Ale.Calendar.enums.Status;
+import it.Ale.Calendar.repository.AttendeeRepository;
 import it.Ale.Calendar.repository.CalendarRepository;
 import it.Ale.Calendar.repository.EventRepository;
 import it.Ale.Calendar.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EventService {
     @Autowired
     EventRepository eventRepository;
+
     @Autowired
     CalendarRepository calendarRepository;
+
     @Autowired
     UserRepository userRepository;
 
-    public Event save(long userid, String calendarName, EventDto eventDto) {
-        Optional<User> userOptional = userRepository.findById(userid);
-        User user = userOptional.get();
-        if (userOptional.isPresent()) {
-            Event event = new Event();
-            event.setName(eventDto.getName());
-            event.setDescription(eventDto.getDescription());
-            event.setStart(eventDto.getStart());
-            event.setEnd(eventDto.getEnd());
-            event.setCalendar(calendarRepository.findByname(calendarName).get());
-            event.getUsers().add(user);
-            eventRepository.save(event);
+    @Autowired
+    AttendeeRepository attendeeRepository;
 
-//            if (eventDto.getPartecipantsId() != null) {
-//                for (int x = 0; x < eventDto.getPartecipantsId().length; x++) {
-//                    Optional<User> partecipantOptional = userRepository.findById(eventDto.getPartecipantsId()[x]);
-//                    if (partecipantOptional.isPresent()) {
-//                        User partecipant = partecipantOptional.get();
-//                        event.getUsers().add(partecipant);
-//                    }
-//                }
-//            }
-            return event;
-        }
-        return null;
+
+    public Event create(long userid, long calendarId, Event eventInsert) {
+        Optional<User> userOptional = userRepository.findById(userid);
+//        if (userOptional.isEmpty()) {
+//            return null;
+//        }
+        User user = userOptional.get();
+        Event event = new Event();
+        event.setName(eventInsert.getName());
+        event.setDescription(eventInsert.getDescription());
+        event.setStart(eventInsert.getStart());
+        event.setEnd(eventInsert.getEnd());
+        event.setParticipants(eventInsert.getParticipants());
+        event.setCalendar(calendarRepository.findById(calendarId).get());
+        return eventRepository.save(event);
     }
 
     public void deleteByid(long id) {
@@ -56,6 +53,4 @@ public class EventService {
     public Optional<Event> findById(long id) {
         return eventRepository.findById(id);
     }
-
 }
-

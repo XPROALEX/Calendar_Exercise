@@ -20,19 +20,29 @@ public class EventController {
     {
         "name": "name",
         "description": "description",
-        "start": "dd/MM/yyyy",
-        "end": "dd/MM/yyyy",
-        "partecipantsId": [1,2,3]
+        "start": "dd/MM/yyyy HH:mm",
+        "end": "dd/MM/yyyy HH:mm",
+        "recurrence": "recurrence",
+        "users": [
+            {
+                "id": 1
+            },  {
+                "id": 2
+            }
+        ]
+
     }
+
      */
-    @PostMapping("/{userId}/{calendarName}")
-    public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable String calendarName, @RequestBody EventDto eventDto) {
-        Event event = eventService.save(userId, calendarName, eventDto);
-        if (event == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().body(eventDto);
+    @PostMapping("/{userId}/{calendarId}")
+    public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable long calendarId, @RequestBody Event eventInsert) {
+        Event event = eventService.create(userId, calendarId, eventInsert);
+//        if (event == null) {
+//            return ResponseEntity.badRequest().build();
+//        }
+        return ResponseEntity.ok().body(event);
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         if (eventService.findById(id).isEmpty()) {

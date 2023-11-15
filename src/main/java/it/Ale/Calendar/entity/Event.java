@@ -13,20 +13,27 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
+
     private String description;
+
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     @Column(nullable = false)
     private LocalDateTime start;
+
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     @Column(nullable = false)
     private LocalDateTime end;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "calendar_id", nullable = false)
     private Calendar calendar;
+
     private String[] recurrence;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(name = "event_participants",
@@ -86,17 +93,24 @@ public class Event {
         this.calendar = calendar;
     }
 
-    public Set<User> getUsers() {
-        return participants;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.participants = users;
-    }
-
-    public void addParticipant(User user) {
+    public void inviteParticipant(User user) {
         this.participants.add(user);
         user.getEvents().add(this);
     }
 
+    public String[] getRecurrence() {
+        return recurrence;
+    }
+
+    public void setRecurrence(String[] recurrence) {
+        this.recurrence = recurrence;
+    }
+
+    public Set<User> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Set<User> participants) {
+        this.participants = participants;
+    }
 }
