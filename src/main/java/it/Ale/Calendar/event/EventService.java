@@ -31,23 +31,7 @@ public class EventService {
     @Autowired
     AttendeeRepository attendeeRepository;
 
-
-    //    public Event create(long userid, long calendarId, EventDto eventDto) {
-//        Optional<User> userOptional = userRepository.findById(userid);
-//        User user = userOptional.get();
-//        Event event = new Event();
-//        event.setName(eventDto.getName());
-//        event.setDescription(eventDto.getDescription());
-//        event.setStart(eventDto.getStart());
-//        event.setEnd(eventDto.getEnd());
-////      event.setParticipants(eventDto.getPartecipantsId());
-//        event.getParticipants().add(user);
-//        Calendar calendar = calendarRepository.findById(calendarId).get();
-//        event.setCalendar(calendar);
-//        calendar.getEvents().add(event);
-//        user.getEvents().add(event);
-//        return eventRepository.save(event);
-//    }
+    //Inviti per gli eventi da creare e implementare.
     public Event create(long userid, long calendarId, EventDto eventDto) {
         Optional<User> userOptional = userRepository.findById(userid);
         User user = userOptional.get();
