@@ -47,7 +47,7 @@ public class EventService {
         user.getEvents().add(event);
         if (eventDto.isRecurring()) {
             Recurrence recurring = eventDto.getRecurringDays();
-            int recurringCount = recurring.getCount();
+            int recurringCount = recurring.getCount()-1;
             DayOfWeek dayOfWeek = recurring.getDay();
             LocalDateTime start = eventDto.getStart();
             LocalDateTime end = eventDto.getEnd();
@@ -57,10 +57,17 @@ public class EventService {
                 recurringEvent.setDescription(eventDto.getDescription());
                 switch (recurring.getFrequency()) {
                     case DAILY:
-                        recurringEvent.setStart(start.with(TemporalAdjusters.next(dayOfWeek)));
-                        recurringEvent.setEnd(end.with(TemporalAdjusters.next(dayOfWeek)));
-                        start = start.with(TemporalAdjusters.next(dayOfWeek));
-                        end = end.with(TemporalAdjusters.next(dayOfWeek));
+                        if (dayOfWeek != null) {
+                            recurringEvent.setStart(start.with(TemporalAdjusters.next(dayOfWeek)));
+                            recurringEvent.setEnd(end.with(TemporalAdjusters.next(dayOfWeek)));
+                            start = start.with(TemporalAdjusters.next(dayOfWeek));
+                            end = end.with(TemporalAdjusters.next(dayOfWeek));
+                        } else {
+                            recurringEvent.setStart(start.plusDays(1));
+                            recurringEvent.setEnd(end.plusDays(1));
+                            start = start.plusDays(1);
+                            end = end.plusDays(1);
+                        }
                         break;
                     case WEEKLY:
                         recurringEvent.setStart(start.plusWeeks(1));
