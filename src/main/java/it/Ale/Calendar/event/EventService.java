@@ -65,30 +65,36 @@ public class EventService {
             Recurrence recurring = eventDto.getRecurringDays();
             int recurringCount = recurring.getCount();
             DayOfWeek dayOfWeek = recurring.getDay();
+            LocalDateTime start = eventDto.getStart();
+            LocalDateTime end = eventDto.getEnd();
             while (recurringCount > 0) {
-                LocalDateTime start = eventDto.getStart();
-                LocalDateTime end = eventDto.getEnd();
-                Event recurringEvent = event;
+                Event recurringEvent = new Event();
+                recurringEvent.setName(eventDto.getName());
+                recurringEvent.setDescription(eventDto.getDescription());
                 switch (recurring.getFrequency()) {
                     case DAILY:
                         recurringEvent.setStart(start.with(TemporalAdjusters.next(dayOfWeek)));
+                        recurringEvent.setEnd(end.with(TemporalAdjusters.next(dayOfWeek)));
+                        start = start.with(TemporalAdjusters.next(dayOfWeek));
+                        end = end.with(TemporalAdjusters.next(dayOfWeek));
+                        break;
                     case WEEKLY:
                         recurringEvent.setStart(start.plusWeeks(1));
+                        recurringEvent.setEnd(end.plusWeeks(1));
+                        start = start.plusWeeks(1);
+                        end = end.plusWeeks(1);
+                        break;
                     case MONTHLY:
                         recurringEvent.setStart(start.plusMonths(1));
+                        recurringEvent.setEnd(end.plusMonths(1));
+                        start = start.plusMonths(1);
+                        end = end.plusMonths(1);
+                        break;
                     case YEARLY:
                         recurringEvent.setStart(start.plusYears(1));
-                }
-
-                switch (recurring.getFrequency()) {
-                    case DAILY:
-                        recurringEvent.setEnd(end.with(TemporalAdjusters.next(dayOfWeek)));
-                    case WEEKLY:
-                        recurringEvent.setEnd(end.plusWeeks(1));
-                    case MONTHLY:
-                        recurringEvent.setEnd(end.plusMonths(1));
-                    case YEARLY:
                         recurringEvent.setEnd(end.plusYears(1));
+                        start = start.plusYears(1);
+                        end = end.plusYears(1);
                 }
 
                 recurringEvent.getParticipants().add(user);
