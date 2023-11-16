@@ -40,7 +40,7 @@ public class Event {
     private boolean recurring = false;
 
     @Enumerated(EnumType.STRING)
-    private Recurrence recurringDays ;
+    private Recurrence recurringDays;
 
     @JsonIgnore
     @ManyToMany

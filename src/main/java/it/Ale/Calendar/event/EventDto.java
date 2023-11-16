@@ -18,7 +18,7 @@ public class EventDto {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime end;
     private boolean recurring =false;
-    private long[] partecipantsId;
+    private long[] participantsId;
 
     @Enumerated(EnumType.STRING)
     private Set<Recurrence> recurringDays = new HashSet<>();
@@ -59,12 +59,12 @@ public class EventDto {
         this.end = end;
     }
 
-    public long[] getPartecipantsId() {
-        return partecipantsId;
+    public long[] getParticipantsId() {
+        return participantsId;
     }
 
-    public void setPartecipantsId(long[] partecipantsId) {
-        this.partecipantsId = partecipantsId;
+    public void setParticipantsId(long[] participantsId) {
+        this.participantsId = participantsId;
     }
 
     public String getCalendarName() {
