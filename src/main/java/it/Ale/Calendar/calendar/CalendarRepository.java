@@ -1,6 +1,6 @@
-package it.Ale.Calendar.repository;
+package it.Ale.Calendar.calendar;
 
-import it.Ale.Calendar.entity.Calendar;
+import it.Ale.Calendar.calendar.Calendar;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

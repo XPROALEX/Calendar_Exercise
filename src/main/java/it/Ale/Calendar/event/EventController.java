@@ -1,8 +1,5 @@
-package it.Ale.Calendar.controller;
+package it.Ale.Calendar.event;
 
-import it.Ale.Calendar.dto.EventDto;
-import it.Ale.Calendar.entity.Event;
-import it.Ale.Calendar.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +32,8 @@ public class EventController {
 
      */
     @PostMapping("/{userId}/{calendarId}")
-    public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable long calendarId, @RequestBody Event eventInsert) {
-        Event event = eventService.create(userId, calendarId, eventInsert);
+    public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable long calendarId, @RequestBody EventDto eventDto) {
+        Event event = eventService.create(userId, calendarId, eventDto);
 //        if (event == null) {
 //            return ResponseEntity.badRequest().build();
 //        }
@@ -50,5 +47,13 @@ public class EventController {
         }
         eventService.deleteByid(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        if (eventService.findEventDtoById(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(eventService.findEventDtoById(id));
     }
 }

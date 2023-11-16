@@ -1,4 +1,4 @@
-package it.Ale.Calendar.enums;
+package it.Ale.Calendar.event.util;
 
 public enum Status {
     PENDING,

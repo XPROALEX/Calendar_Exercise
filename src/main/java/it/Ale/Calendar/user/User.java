@@ -1,8 +1,9 @@
-package it.Ale.Calendar.entity;
+package it.Ale.Calendar.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.Ale.Calendar.calendar.Calendar;
+import it.Ale.Calendar.event.Event;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +19,7 @@ public class User {
     private String name;
 
     @Column(unique = true, nullable = false)
-    @Email(message = "Invalid email")
+//    @Email(message = "Invalid email")
     private String email;
 
     @Column(nullable = false)

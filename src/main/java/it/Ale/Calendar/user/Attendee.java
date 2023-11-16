@@ -1,7 +1,8 @@
-package it.Ale.Calendar.entity;
+package it.Ale.Calendar.user;
 
 
-import it.Ale.Calendar.enums.Status;
+import it.Ale.Calendar.event.Event;
+import it.Ale.Calendar.event.util.Status;
 import jakarta.persistence.*;
 
 
@@ -17,7 +18,7 @@ public class Attendee {
     @JoinColumn(name = "user_id")
     private User invitedUser;
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status= Status.PENDING;
 
     public Attendee() {
     }

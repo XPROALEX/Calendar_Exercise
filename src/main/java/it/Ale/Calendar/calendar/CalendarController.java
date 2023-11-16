@@ -1,8 +1,6 @@
-package it.Ale.Calendar.controller;
+package it.Ale.Calendar.calendar;
 
-import it.Ale.Calendar.entity.Calendar;
-import it.Ale.Calendar.service.CalendarService;
-import it.Ale.Calendar.service.UserService;
+import it.Ale.Calendar.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,14 +60,15 @@ public class CalendarController {
     }
      */
     @PutMapping("/{userId}/{id}")
-    public ResponseEntity<?> update(@PathVariable long userId, @PathVariable Long id, @RequestBody Calendar calendar) {
+    public ResponseEntity<?> update(@PathVariable long userId, @PathVariable long id, @RequestBody Calendar calendar) {
         Calendar modifiedCalendar = calendarService.update(userId, id, calendar);
         if (modifiedCalendar == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(modifiedCalendar);
     }
-@DeleteMapping("/{id}")
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         if (calendarService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();

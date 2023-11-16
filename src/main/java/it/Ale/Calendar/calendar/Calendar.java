@@ -1,12 +1,11 @@
-package it.Ale.Calendar.entity;
+package it.Ale.Calendar.calendar;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.Ale.Calendar.event.Event;
+import it.Ale.Calendar.user.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,14 +15,14 @@ public class Calendar {
     private Long id;
 
     @Column(nullable = false)
-    @Size(min = 2, max = 10)
-    @Pattern(regexp = "^[^\\s].*[^\\s]$")
+//    @Size(min = 2, max = 10)
+//    @Pattern(regexp = "^[^\\s].*[^\\s]$")
     private String name;
 
     private String description;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne( cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 

@@ -1,9 +1,9 @@
-package it.Ale.Calendar.service;
+package it.Ale.Calendar.calendar;
 
-import it.Ale.Calendar.entity.Calendar;
-import it.Ale.Calendar.entity.User;
-import it.Ale.Calendar.repository.CalendarRepository;
-import it.Ale.Calendar.repository.UserRepository;
+import it.Ale.Calendar.calendar.Calendar;
+import it.Ale.Calendar.user.User;
+import it.Ale.Calendar.calendar.CalendarRepository;
+import it.Ale.Calendar.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

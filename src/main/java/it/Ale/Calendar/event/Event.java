@@ -1,9 +1,14 @@
-package it.Ale.Calendar.entity;
+package it.Ale.Calendar.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.Ale.Calendar.calendar.Calendar;
+import it.Ale.Calendar.event.util.Recurrence;
+import it.Ale.Calendar.event.util.Status;
+import it.Ale.Calendar.user.User;
 import jakarta.persistence.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +24,11 @@ public class Event {
 
     private String description;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "calendar_id", nullable = false)
+    private Calendar calendar;
+
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     @Column(nullable = false)
     private LocalDateTime start;
@@ -27,12 +37,10 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime end;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "calendar_id", nullable = false)
-    private Calendar calendar;
+    private boolean recurring = false;
 
-    private String[] recurrence;
+    @Enumerated(EnumType.STRING)
+    private Set<Recurrence> recurringDays;
 
     @JsonIgnore
     @ManyToMany
@@ -40,6 +48,9 @@ public class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> participants = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.PENDING;
 
 
     public Event() {
@@ -98,13 +109,6 @@ public class Event {
         user.getEvents().add(this);
     }
 
-    public String[] getRecurrence() {
-        return recurrence;
-    }
-
-    public void setRecurrence(String[] recurrence) {
-        this.recurrence = recurrence;
-    }
 
     public Set<User> getParticipants() {
         return participants;

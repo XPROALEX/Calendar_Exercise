@@ -1,4 +1,4 @@
-package it.Ale.Calendar.dto;
+package it.Ale.Calendar.user;
 
 public class ContactDto {
     private String name;

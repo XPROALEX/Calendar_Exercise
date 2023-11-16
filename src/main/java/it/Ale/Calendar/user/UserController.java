@@ -1,9 +1,10 @@
-package it.Ale.Calendar.controller;
+package it.Ale.Calendar.user;
 
-import it.Ale.Calendar.dto.UserDto;
-import it.Ale.Calendar.entity.User;
-import it.Ale.Calendar.service.UserService;
-import it.Ale.Calendar.dto.ContactDto;
+import it.Ale.Calendar.event.EventDto;
+import it.Ale.Calendar.calendar.Calendar;
+import it.Ale.Calendar.event.Event;
+import it.Ale.Calendar.calendar.CalendarService;
+import it.Ale.Calendar.event.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     UserService userService;
+    @Autowired
+    CalendarService calendarService;
+    @Autowired
+    EventService eventService;
 /*
 Get all User list
 url /user
@@ -29,7 +34,7 @@ url /user
      */
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable long id) {
-        if (userService.findByIdDto(id)==null) {
+        if (userService.findByIdDto(id) == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(userService.findByIdDto(id));
@@ -90,7 +95,7 @@ url /user
      */
     @PutMapping("{id}/contacts")
     public ResponseEntity<?> addContact(@PathVariable int id, @RequestBody ContactDto email) {
-        userService.addContact(id,email);
+        userService.addContact(id, email);
         return ResponseEntity.ok().build();
     }
     /*
@@ -102,5 +107,51 @@ url /user
     @GetMapping("{id}/contacts")
     public ResponseEntity<?> getContacts(@PathVariable int id) {
         return ResponseEntity.ok().body(userService.getContactsDto(id));
+    }
+
+    /*
+    Put Edit Calendar
+    url /user/{userId}/calendar/{calendarId}
+    Json
+    {
+        "name": "name",
+        "description": "description"
+    }
+     */
+    @PutMapping("/{userId}/calendar/{calendarId}")
+    public ResponseEntity<?> update(@PathVariable long userId, @PathVariable long calendarId, @RequestBody Calendar calendar) {
+        Calendar modifiedCalendar = calendarService.update(userId, calendarId, calendar);
+        if (modifiedCalendar == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(modifiedCalendar);
+    }
+    /*
+    Post Create Event
+    url /user/{userId}/calendar/{calendarId}
+    Json
+    {
+        "name": "name",
+        "description": "description",
+        "start": "dd/MM/yyyy HH:mm",
+        "end": "dd/MM/yyyy HH:mm",
+        "recurrence": "[recurrence]",
+        "participants": [
+            {
+                "id": 1
+            },  {
+                "id": 2
+            }
+        ]
+    }
+     */
+
+    @PostMapping("/{userId}/calendar/{calendarId}")
+    public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable long calendarId, @RequestBody EventDto eventDto) {
+        Event event = eventService.create(userId, calendarId, eventDto);
+        if (event == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(event);
     }
 }

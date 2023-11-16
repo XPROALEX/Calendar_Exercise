@@ -1,16 +1,16 @@
-package it.Ale.Calendar.dto;
+package it.Ale.Calendar.user;
 
-import it.Ale.Calendar.entity.Calendar;
-import it.Ale.Calendar.entity.Event;
-import it.Ale.Calendar.entity.User;
+import it.Ale.Calendar.calendar.Calendar;
+import it.Ale.Calendar.event.Event;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UserDto {
     private String name;
     private String email;
     private Set<Calendar> calendars;
-    private Set<ContactDto> contacts =new HashSet<>();
+    private Set<ContactDto> contacts = new HashSet<>();
     private Set<Event> events = new HashSet<>();
 
     public UserDto() {
