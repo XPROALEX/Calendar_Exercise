@@ -17,11 +17,11 @@ public class EventDto {
     private LocalDateTime start;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime end;
-    private boolean recurring =false;
+    private boolean recurring = false;
     private long[] participantsId;
 
     @Enumerated(EnumType.STRING)
-    private Set<Recurrence> recurringDays = new HashSet<>();
+    private Recurrence recurringDays;
 
 
     public EventDto() {
@@ -83,11 +83,11 @@ public class EventDto {
         this.recurring = recurring;
     }
 
-    public Set<Recurrence> getRecurringDays() {
+    public Recurrence getRecurringDays() {
         return recurringDays;
     }
 
-    public void setRecurringDays(Set<Recurrence> recurringDays) {
+    public void setRecurringDays(Recurrence recurringDays) {
         this.recurringDays = recurringDays;
     }
 }

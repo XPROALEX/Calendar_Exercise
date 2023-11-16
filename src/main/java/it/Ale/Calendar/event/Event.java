@@ -8,7 +8,6 @@ import it.Ale.Calendar.event.util.Status;
 import it.Ale.Calendar.user.User;
 import jakarta.persistence.*;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
