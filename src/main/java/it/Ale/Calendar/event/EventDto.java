@@ -1,10 +1,13 @@
 package it.Ale.Calendar.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import it.Ale.Calendar.event.util.Recurrence;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EventDto {
     private String name;
@@ -14,9 +17,12 @@ public class EventDto {
     private LocalDateTime start;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime end;
-    private boolean recurring;
+    private boolean recurring =false;
     private long[] partecipantsId;
-    private String[] recurrence;
+
+    @Enumerated(EnumType.STRING)
+    private Set<Recurrence> recurringDays = new HashSet<>();
+
 
     public EventDto() {
     }
@@ -69,11 +75,19 @@ public class EventDto {
         CalendarName = calendarName;
     }
 
-    public String[] getRecurrence() {
-        return recurrence;
+    public boolean isRecurring() {
+        return recurring;
     }
 
-    public void setRecurrence(String[] recurrence) {
-        this.recurrence = recurrence;
+    public void setRecurring(boolean recurring) {
+        this.recurring = recurring;
+    }
+
+    public Set<Recurrence> getRecurringDays() {
+        return recurringDays;
+    }
+
+    public void setRecurringDays(Set<Recurrence> recurringDays) {
+        this.recurringDays = recurringDays;
     }
 }

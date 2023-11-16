@@ -40,7 +40,7 @@ public class Event {
     private boolean recurring = false;
 
     @Enumerated(EnumType.STRING)
-    private Set<Recurrence> recurringDays;
+    private Recurrence recurringDays ;
 
     @JsonIgnore
     @ManyToMany
@@ -104,11 +104,6 @@ public class Event {
         this.calendar = calendar;
     }
 
-    public void inviteParticipant(User user) {
-        this.participants.add(user);
-        user.getEvents().add(this);
-    }
-
 
     public Set<User> getParticipants() {
         return participants;
@@ -116,5 +111,34 @@ public class Event {
 
     public void setParticipants(Set<User> participants) {
         this.participants = participants;
+    }
+
+    public boolean isRecurring() {
+        return recurring;
+    }
+
+    public void setRecurring(boolean recurring) {
+        this.recurring = recurring;
+    }
+
+    public Recurrence getRecurringDays() {
+        return recurringDays;
+    }
+
+    public void setRecurringDays(Recurrence recurringDays) {
+        this.recurringDays = recurringDays;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void inviteParticipant(User user) {
+        this.participants.add(user);
+        user.getEvents().add(this);
     }
 }
