@@ -126,26 +126,25 @@ url /user
         }
         return ResponseEntity.ok(modifiedCalendar);
     }
+
     /*
     Post Create Event
     url /user/{userId}/calendar/{calendarId}
     Json
-    {
-        "name": "name",
-        "description": "description",
-        "start": "dd/MM/yyyy HH:mm",
-        "end": "dd/MM/yyyy HH:mm",
-        "recurrence": "[recurrence]",
-        "participants": [
-            {
-                "id": 1
-            },  {
-                "id": 2
-            }
-        ]
-    }
+  {
+  "name": "eventName",
+  "description": "eventDescription",
+  "start": "16/11/2023 10:00",
+  "end": "16/11/2023 11:30",
+  "recurring": true or false,
+  "participantsId": [1, 2, 3],
+  "recurringDays": {
+    "frequency": "DAILY",
+    "day": "MONDAY",
+    "count": 5
+  }
+}
      */
-
     @PostMapping("/{userId}/calendar/{calendarId}")
     public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable long calendarId, @RequestBody EventDto eventDto) {
         Event event = eventService.create(userId, calendarId, eventDto);

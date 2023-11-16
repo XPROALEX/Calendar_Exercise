@@ -2,12 +2,8 @@ package it.Ale.Calendar.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import it.Ale.Calendar.event.util.Recurrence;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 public class EventDto {
     private String name;
@@ -20,7 +16,6 @@ public class EventDto {
     private boolean recurring = false;
     private long[] participantsId;
 
-    @Enumerated(EnumType.STRING)
     private Recurrence recurringDays;
 
 

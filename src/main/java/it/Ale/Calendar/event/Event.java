@@ -37,8 +37,6 @@ public class Event {
     private LocalDateTime end;
 
     private boolean recurring = false;
-
-    @Enumerated(EnumType.STRING)
     private Recurrence recurringDays;
 
     @JsonIgnore

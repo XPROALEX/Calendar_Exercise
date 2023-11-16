@@ -1,20 +1,27 @@
 package it.Ale.Calendar.event.util;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.Embeddable;
 
 import java.time.DayOfWeek;
 
+@Embeddable
+
 public class Recurrence {
-    @Enumerated(EnumType.STRING)
+    //    @Enumerated(EnumType.STRING)
     private RecurrenceFormat frequency;
 
-    @Enumerated(EnumType.STRING)
+    //    @Enumerated(EnumType.STRING)
     private DayOfWeek day;
 
     private int count;
 
     public Recurrence() {
+    }
+
+    public Recurrence(RecurrenceFormat frequency, DayOfWeek day, int count) {
+        this.frequency = frequency;
+        this.day = day;
+        this.count = count;
     }
 
     public RecurrenceFormat getFrequency() {
