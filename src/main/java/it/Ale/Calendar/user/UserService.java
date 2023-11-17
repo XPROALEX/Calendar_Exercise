@@ -83,6 +83,7 @@ public class UserService {
             userRepository.save(user);
         } else throw new RuntimeException("Contact already exists");
     }
+
     public Iterable<ContactDto> getContactsDto(long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {

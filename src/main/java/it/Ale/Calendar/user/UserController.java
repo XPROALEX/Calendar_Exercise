@@ -140,7 +140,7 @@ url /user
   "participantsId": [1, 2, 3],
   "recurringDays": {
     "frequency": "DAILY",
-    "day": "MONDAY",
+    "day": "MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY",
     "count": 5
   }
 }

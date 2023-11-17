@@ -47,7 +47,7 @@ public class EventService {
         user.getEvents().add(event);
         if (eventDto.isRecurring()) {
             Recurrence recurring = eventDto.getRecurringDays();
-            int recurringCount = recurring.getCount()-1;
+            int recurringCount = recurring.getCount() - 1;
             DayOfWeek dayOfWeek = recurring.getDay();
             LocalDateTime start = eventDto.getStart();
             LocalDateTime end = eventDto.getEnd();

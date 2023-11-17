@@ -47,7 +47,7 @@ public class CalendarController {
         if (userService.findById(userId).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(calendarService.save(userId, calendar));
+        return ResponseEntity.ok(calendarService.create(userId, calendar));
     }
 
     /*

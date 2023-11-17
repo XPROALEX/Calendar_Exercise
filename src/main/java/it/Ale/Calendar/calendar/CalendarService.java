@@ -16,11 +16,12 @@ public class CalendarService {
     @Autowired
     UserRepository userRepository;
 
-    public Calendar save(long userId, Calendar calendar) {
+    public Calendar create(long userId, Calendar calendar) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             calendar.setOwner(user);
+            user.getCalendars().add(calendar);
             return calendarRepository.save(calendar);
         }
         return null;
