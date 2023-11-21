@@ -9,6 +9,8 @@ import it.Ale.Calendar.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -69,5 +71,22 @@ public class EventService {
 
     public Optional<Event> findById(long id) {
         return eventRepository.findById(id);
+    }
+
+    public Iterable<Event> findAllByCalendar(long calendarId) {
+        return eventRepository.findEventByCalendarId(calendarId);
+    }
+
+    public Iterable<Event> findAllByCalendarAndStartBetween(long calendarId, String startStr, String endStr) {
+        LocalDateTime start = LocalDate.parse(startStr).atStartOfDay();
+        LocalDateTime end = LocalDate.parse(endStr).plusDays(1).atStartOfDay();
+        return eventRepository.findEventByCalendarIdAndStartBetween(calendarId, start, end);
+    }
+
+    public Iterable<Event> findAllByCalendarToday(long calendarId) {
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.plusDays(1).atStartOfDay();
+        return eventRepository.findEventByCalendarIdAndStartBetween(calendarId, start, end);
     }
 }

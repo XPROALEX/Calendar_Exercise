@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/event")
 public class EventController {
@@ -12,31 +15,25 @@ public class EventController {
 
     /*
     Post Create Event
-    url /event/{userId}/{calendarName}
+    url /user/{userId}/calendar/{calendarId}
     Json
-    {
-        "name": "name",
-        "description": "description",
-        "start": "dd/MM/yyyy HH:mm",
-        "end": "dd/MM/yyyy HH:mm",
-        "recurrence": "recurrence",
-        "users": [
-            {
-                "id": 1
-            },  {
-                "id": 2
-            }
-        ]
-
-    }
-
+      {
+        "name": "eventName",
+        "description": "eventDescription",
+        "start": "16/11/2023 10:00",
+        "end": "16/11/2023 11:30",
+        "recurring": true or false,
+        "participantsId": [1, 2, 3],
+        "recurringDays": {
+          "frequency": "DAILY","WEEKLY","MONTHLY","YEARLY",
+          "days": "MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY",
+          "count": 5
+        }
+      }
      */
-    @PostMapping("/{userId}/{calendarId}")
+    @PostMapping("user/{userId}/calendar/{calendarId}")
     public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable long calendarId, @RequestBody EventDto eventDto) {
-         eventService.create(userId, calendarId, eventDto);
-//        if (event == null) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        eventService.create(userId, calendarId, eventDto);
         return ResponseEntity.ok().body(eventDto);
     }
 
@@ -55,5 +52,29 @@ public class EventController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(eventService.findEventDtoById(id));
+    }
+
+    @GetMapping("calendar/{calendarId}")
+    public ResponseEntity<?> findAllByCalendar(@PathVariable Long calendarId) {
+        return ResponseEntity.ok().body(eventService.findAllByCalendar(calendarId));
+    }
+
+    /*
+    get Events By date
+    url /calendar/{calendarId}
+    Json
+    {
+        "start": "16/11/2023 10:00",
+        "end": "16/11/2023 11:30"
+    }
+     */
+    @GetMapping("calendar/{calendarId}/date/{startStr}/{endStr}")
+    public ResponseEntity<?> findAllByCalendarAndDate(@PathVariable Long calendarId, @PathVariable String startStr, @PathVariable String endStr) {
+        return ResponseEntity.ok().body(eventService.findAllByCalendarAndStartBetween(calendarId, startStr, endStr));
+    }
+
+    @GetMapping("calendar/{calendarId}/today")
+    public ResponseEntity<?> findAllByCalendarToday(@PathVariable Long calendarId) {
+        return ResponseEntity.ok().body(eventService.findAllByCalendarToday(calendarId));
     }
 }

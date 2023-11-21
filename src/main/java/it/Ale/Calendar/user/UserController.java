@@ -137,20 +137,17 @@ url /user
   "start": "16/11/2023 10:00",
   "end": "16/11/2023 11:30",
   "recurring": true or false,
-  "participantsId": [1, 2, 3],
+  "participantsId": [1, 2, 3],---->to be implemented
   "recurringDays": {
-    "frequency": "DAILY",
-    "day": "MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY",
+    "frequency": "DAILY","WEEKLY","MONTHLY","YEARLY",
+    "days": "MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY",
     "count": 5
   }
 }
      */
     @PostMapping("/{userId}/calendar/{calendarId}")
     public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable long calendarId, @RequestBody EventDto eventDto) {
-       eventService.create(userId, calendarId, eventDto);
-//        if (event == null) {
-//            return ResponseEntity.badRequest().build();
-//        }
+        eventService.create(userId, calendarId, eventDto);
         return ResponseEntity.ok().body(eventDto);
     }
 }

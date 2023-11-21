@@ -9,7 +9,6 @@ import jakarta.persistence.Embeddable;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +51,22 @@ public class Recurrence {
     public void setCount(int count) {
         this.count = count;
     }
+    /*
+    recurrenceForDaysPattern
+    days: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+    frequency: DAILY
+    only daily repetitions without filtering for the days of the week
+    frequency: WEEKLY
+    weekly repetition with counter , repetitions fore days of the week with weeks counter .
+    e.g. every Monday,Tuesday and Wednesday for 4 weeks .
+    frequency: MONTHLY
+    only monthly repetitions without filtering for the days of the week
+    frequency: YEARLY
+    only yearly repetitions without filtering for the days of the week
+    ------
+    start and end have "minusDays(1)" only to avoid problems with the creation of weekly events that exceeded days,
+    when start and end are then added to events those days are restored
+     */
 
     public void recurrenceForDaysPattern(User user, Calendar calendar, EventDto eventDto, EventRepository eventRepository) {
         Recurrence recurring = eventDto.getRecurringDays();
