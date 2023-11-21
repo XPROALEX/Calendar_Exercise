@@ -1,12 +1,11 @@
 package it.Ale.Calendar.event.util;
 
+import it.Ale.Calendar.calendar.Calendar;
 import it.Ale.Calendar.event.Event;
 import it.Ale.Calendar.event.EventDto;
-import it.Ale.Calendar.calendar.Calendar;
 import it.Ale.Calendar.event.EventRepository;
 import it.Ale.Calendar.user.User;
 import jakarta.persistence.Embeddable;
-
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -21,7 +20,7 @@ public class Recurrence {
     private RecurrenceFormat frequency;
 
     //    @Enumerated(EnumType.STRING)
-    private Set<DayOfWeek> days;
+    private Set<DayOfWeek> days = new HashSet<>();
 
     private int count;
 
@@ -55,54 +54,94 @@ public class Recurrence {
 
     public void recurrenceForDaysPattern(User user, Calendar calendar, EventDto eventDto, EventRepository eventRepository) {
         Recurrence recurring = eventDto.getRecurringDays();
-        Set<DayOfWeek> days = recurring.getDays();
-        days.forEach(day -> {
-            int recurringCount = recurring.getCount() - 1;
-            LocalDateTime start = eventDto.getStart();
-            LocalDateTime end = eventDto.getEnd();
-            while (recurringCount > 0) {
-                Event recurringEvent = new Event();
-                recurringEvent.setName(eventDto.getName());
-                recurringEvent.setDescription(eventDto.getDescription());
-                recurringEvent.setCalendar(calendar);
-                calendar.getEvents().add(recurringEvent);
-                user.getEvents().add(recurringEvent);
-                eventRepository.save(recurringEvent);
-                switch (recurring.getFrequency()) {
-                    case DAILY:
-                        if (days != null) {
+        int recurringCount = recurring.getCount() - 1;
+        LocalDateTime start = eventDto.getStart();
+        LocalDateTime end = eventDto.getEnd();
+        switch (recurring.getFrequency()) {
+            case DAILY:
+                Set<DayOfWeek> days = recurring.getDays();
+                if (days != null) {
+                    while (recurringCount > 0) {
+                        Event recurringEvent = new Event();
+                        for (DayOfWeek day : days) {
+                            recurringEvent.setName(eventDto.getName());
+                            recurringEvent.setDescription(eventDto.getDescription());
                             recurringEvent.setStart(start.with(TemporalAdjusters.next(day)));
                             recurringEvent.setEnd(end.with(TemporalAdjusters.next(day)));
                             start = start.with(TemporalAdjusters.next(day));
                             end = end.with(TemporalAdjusters.next(day));
-                        } else {
-                            recurringEvent.setStart(start.plusDays(1));
-                            recurringEvent.setEnd(end.plusDays(1));
-                            start = start.plusDays(1);
-                            end = end.plusDays(1);
+                            recurringEvent.setCalendar(calendar);
+                            calendar.getEvents().add(recurringEvent);
+                            user.getEvents().add(recurringEvent);
+                            eventRepository.save(recurringEvent);
                         }
-                        break;
-                    case WEEKLY:
-                        recurringEvent.setStart(start.plusWeeks(1));
-                        recurringEvent.setEnd(end.plusWeeks(1));
-                        start = start.plusWeeks(1);
-                        end = end.plusWeeks(1);
-                        break;
-                    case MONTHLY:
-                        recurringEvent.setStart(start.plusMonths(1));
-                        recurringEvent.setEnd(end.plusMonths(1));
-                        start = start.plusMonths(1);
-                        end = end.plusMonths(1);
-                        break;
-                    case YEARLY:
-                        recurringEvent.setStart(start.plusYears(1));
-                        recurringEvent.setEnd(end.plusYears(1));
-                        start = start.plusYears(1);
-                        end = end.plusYears(1);
+                        recurringCount--;
+                    }
+                } else {
+                    while (recurringCount > 0) {
+                        Event recurringEvent = new Event();
+                        recurringEvent.setName(eventDto.getName());
+                        recurringEvent.setDescription(eventDto.getDescription());
+                        recurringEvent.setStart(start.plusDays(1));
+                        recurringEvent.setEnd(end.plusDays(1));
+                        start = start.plusDays(1);
+                        end = end.plusDays(1);
+                        recurringEvent.setCalendar(calendar);
+                        calendar.getEvents().add(recurringEvent);
+                        user.getEvents().add(recurringEvent);
+                        eventRepository.save(recurringEvent);
+                        recurringCount--;
+                    }
                 }
-                recurringCount--;
-            }
-        });
+                break;
+            case WEEKLY:
+                while (recurringCount > 0) {
+                    Event recurringEvent = new Event();
+                    recurringEvent.setName(eventDto.getName());
+                    recurringEvent.setDescription(eventDto.getDescription());
+                    recurringEvent.setStart(start.plusWeeks(1));
+                    recurringEvent.setEnd(end.plusWeeks(1));
+                    start = start.plusWeeks(1);
+                    end = end.plusWeeks(1);
+                    recurringEvent.setCalendar(calendar);
+                    calendar.getEvents().add(recurringEvent);
+                    user.getEvents().add(recurringEvent);
+                    eventRepository.save(recurringEvent);
+                    recurringCount--;
+                }
+                break;
+            case MONTHLY:
+                while (recurringCount > 0) {
+                    Event recurringEvent = new Event();
+                    recurringEvent.setName(eventDto.getName());
+                    recurringEvent.setDescription(eventDto.getDescription());
+                    recurringEvent.setStart(start.plusMonths(1));
+                    recurringEvent.setEnd(end.plusMonths(1));
+                    start = start.plusMonths(1);
+                    end = end.plusMonths(1);
+                    recurringEvent.setCalendar(calendar);
+                    calendar.getEvents().add(recurringEvent);
+                    user.getEvents().add(recurringEvent);
+                    eventRepository.save(recurringEvent);
+                    recurringCount--;
+                }
+                break;
+            case YEARLY:
+                while (recurringCount > 0) {
+                    Event recurringEvent = new Event();
+                    recurringEvent.setName(eventDto.getName());
+                    recurringEvent.setDescription(eventDto.getDescription());
+                    recurringEvent.setStart(start.plusYears(1));
+                    recurringEvent.setEnd(end.plusYears(1));
+                    start = start.plusYears(1);
+                    end = end.plusYears(1);
+                    recurringEvent.setCalendar(calendar);
+                    calendar.getEvents().add(recurringEvent);
+                    user.getEvents().add(recurringEvent);
+                    eventRepository.save(recurringEvent);
+                    recurringCount--;
+                }
+        }
     }
 }
 

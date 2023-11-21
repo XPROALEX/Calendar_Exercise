@@ -28,31 +28,25 @@ public class EventService {
     //Inviti per gli eventi da creare e implementare.
     public Event create(long userid, long calendarId, EventDto eventDto) {
         User user = userRepository.findById(userid).get();
-        Optional<Calendar> calendarOptional = calendarRepository.findById(calendarId);
-        if (calendarOptional.isEmpty()) {
-            return null;
+        Calendar calendar = calendarRepository.findById(calendarId).get();
+        Event event = new Event();
+        event.setRecurring(eventDto.isRecurring());
+        event.setName(eventDto.getName());
+        event.setDescription(eventDto.getDescription());
+        event.setStart(eventDto.getStart());
+        event.setEnd(eventDto.getEnd());
+        event.getParticipants().add(user);
+        event.setCalendar(calendar);
+        calendar.getEvents().add(event);
+        user.getEvents().add(event);
+        eventRepository.save(event);
+        if (event.isRecurring()) {
+            Recurrence recurrence = new Recurrence();
+            recurrence.recurrenceForDaysPattern(user, calendar, eventDto, eventRepository);
         }
-        Calendar calendar = calendarOptional.get();
-        if (eventDto.isRecurring() == false) {
-            Event event = new Event();
-            event.setRecurring(eventDto.isRecurring());
-            event.setName(eventDto.getName());
-            event.setDescription(eventDto.getDescription());
-            event.setStart(eventDto.getStart());
-            event.setEnd(eventDto.getEnd());
-            event.getParticipants().add(user);
-            event.setCalendar(calendar);
-            calendar.getEvents().add(event);
-            user.getEvents().add(event);
-            eventRepository.save(event);
-            return event;
-        }
-//        if (eventDto.isRecurring()) {
-//            Recurrence recurrence = new Recurrence();
-//            recurrence.recurrenceForDaysPattern(user, calendar, eventDto, eventRepository);
-//        }
-        return null;
+        return event;
     }
+
 
     public void deleteByid(long id) {
         eventRepository.deleteById(id);
