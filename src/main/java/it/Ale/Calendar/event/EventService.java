@@ -1,20 +1,14 @@
 package it.Ale.Calendar.event;
 
-import it.Ale.Calendar.event.util.Recurrence;
-import it.Ale.Calendar.user.User;
 import it.Ale.Calendar.calendar.Calendar;
-import it.Ale.Calendar.user.AttendeeRepository;
 import it.Ale.Calendar.calendar.CalendarRepository;
+import it.Ale.Calendar.event.util.Recurrence;
+import it.Ale.Calendar.user.AttendeeRepository;
+import it.Ale.Calendar.user.User;
 import it.Ale.Calendar.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Optional;
 
 @Service
@@ -33,70 +27,31 @@ public class EventService {
 
     //Inviti per gli eventi da creare e implementare.
     public Event create(long userid, long calendarId, EventDto eventDto) {
-        Optional<User> userOptional = userRepository.findById(userid);
-        User user = userOptional.get();
-        Event event = new Event();
-        event.setName(eventDto.getName());
-        event.setDescription(eventDto.getDescription());
-        event.setStart(eventDto.getStart());
-        event.setEnd(eventDto.getEnd());
-        event.getParticipants().add(user);
-        Calendar calendar = calendarRepository.findById(calendarId).get();
-        event.setCalendar(calendar);
-        calendar.getEvents().add(event);
-        user.getEvents().add(event);
-        if (eventDto.isRecurring()) {
-            Recurrence recurring = eventDto.getRecurringDays();
-            int recurringCount = recurring.getCount() - 1;
-            DayOfWeek dayOfWeek = recurring.getDay();
-            LocalDateTime start = eventDto.getStart();
-            LocalDateTime end = eventDto.getEnd();
-            while (recurringCount > 0) {
-                Event recurringEvent = new Event();
-                recurringEvent.setName(eventDto.getName());
-                recurringEvent.setDescription(eventDto.getDescription());
-                switch (recurring.getFrequency()) {
-                    case DAILY:
-                        if (dayOfWeek != null) {
-                            recurringEvent.setStart(start.with(TemporalAdjusters.next(dayOfWeek)));
-                            recurringEvent.setEnd(end.with(TemporalAdjusters.next(dayOfWeek)));
-                            start = start.with(TemporalAdjusters.next(dayOfWeek));
-                            end = end.with(TemporalAdjusters.next(dayOfWeek));
-                        } else {
-                            recurringEvent.setStart(start.plusDays(1));
-                            recurringEvent.setEnd(end.plusDays(1));
-                            start = start.plusDays(1);
-                            end = end.plusDays(1);
-                        }
-                        break;
-                    case WEEKLY:
-                        recurringEvent.setStart(start.plusWeeks(1));
-                        recurringEvent.setEnd(end.plusWeeks(1));
-                        start = start.plusWeeks(1);
-                        end = end.plusWeeks(1);
-                        break;
-                    case MONTHLY:
-                        recurringEvent.setStart(start.plusMonths(1));
-                        recurringEvent.setEnd(end.plusMonths(1));
-                        start = start.plusMonths(1);
-                        end = end.plusMonths(1);
-                        break;
-                    case YEARLY:
-                        recurringEvent.setStart(start.plusYears(1));
-                        recurringEvent.setEnd(end.plusYears(1));
-                        start = start.plusYears(1);
-                        end = end.plusYears(1);
-                }
-
-                recurringEvent.getParticipants().add(user);
-                recurringEvent.setCalendar(calendar);
-                calendar.getEvents().add(recurringEvent);
-                user.getEvents().add(recurringEvent);
-                eventRepository.save(recurringEvent);
-                recurringCount--;
-            }
+        User user = userRepository.findById(userid).get();
+        Optional<Calendar> calendarOptional = calendarRepository.findById(calendarId);
+        if (calendarOptional.isEmpty()) {
+            return null;
         }
-        return eventRepository.save(event);
+        Calendar calendar = calendarOptional.get();
+        if (eventDto.isRecurring() == false) {
+            Event event = new Event();
+            event.setRecurring(eventDto.isRecurring());
+            event.setName(eventDto.getName());
+            event.setDescription(eventDto.getDescription());
+            event.setStart(eventDto.getStart());
+            event.setEnd(eventDto.getEnd());
+            event.getParticipants().add(user);
+            event.setCalendar(calendar);
+            calendar.getEvents().add(event);
+            user.getEvents().add(event);
+            eventRepository.save(event);
+            return event;
+        }
+//        if (eventDto.isRecurring()) {
+//            Recurrence recurrence = new Recurrence();
+//            recurrence.recurrenceForDaysPattern(user, calendar, eventDto, eventRepository);
+//        }
+        return null;
     }
 
     public void deleteByid(long id) {

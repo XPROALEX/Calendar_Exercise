@@ -151,6 +151,6 @@ url /user
         if (event == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().body(event);
+        return ResponseEntity.ok().body(eventDto);
     }
 }
