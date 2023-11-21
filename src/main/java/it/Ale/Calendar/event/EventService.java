@@ -9,6 +9,8 @@ import it.Ale.Calendar.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -26,14 +28,13 @@ public class EventService {
     AttendeeRepository attendeeRepository;
 
     //Inviti per gli eventi da creare e implementare.
-    public Event create(long userid, long calendarId, EventDto eventDto) {
+    public void create(long userid, long calendarId, EventDto eventDto) {
         User user = userRepository.findById(userid).get();
-        Optional<Calendar> calendarOptional = calendarRepository.findById(calendarId);
-        if (calendarOptional.isEmpty()) {
-            return null;
-        }
-        Calendar calendar = calendarOptional.get();
-        if (eventDto.isRecurring() == false) {
+        Calendar calendar = calendarRepository.findById(calendarId).get();
+        if (eventDto.isRecurring()) {
+            Recurrence recurrence = new Recurrence();
+            recurrence.recurrenceForDaysPattern(user, calendar, eventDto, eventRepository);
+        } else if (eventDto.isRecurring() == false) {
             Event event = new Event();
             event.setRecurring(eventDto.isRecurring());
             event.setName(eventDto.getName());
@@ -42,17 +43,13 @@ public class EventService {
             event.setEnd(eventDto.getEnd());
             event.getParticipants().add(user);
             event.setCalendar(calendar);
+            event.setRecurring(eventDto.isRecurring());
             calendar.getEvents().add(event);
             user.getEvents().add(event);
             eventRepository.save(event);
-            return event;
         }
-//        if (eventDto.isRecurring()) {
-//            Recurrence recurrence = new Recurrence();
-//            recurrence.recurrenceForDaysPattern(user, calendar, eventDto, eventRepository);
-//        }
-        return null;
     }
+
 
     public void deleteByid(long id) {
         eventRepository.deleteById(id);
@@ -74,5 +71,22 @@ public class EventService {
 
     public Optional<Event> findById(long id) {
         return eventRepository.findById(id);
+    }
+
+    public Iterable<Event> findAllByCalendar(long calendarId) {
+        return eventRepository.findEventByCalendarId(calendarId);
+    }
+
+    public Iterable<Event> findAllByCalendarAndStartBetween(long calendarId, String startStr, String endStr) {
+        LocalDateTime start = LocalDate.parse(startStr).atStartOfDay();
+        LocalDateTime end = LocalDate.parse(endStr).plusDays(1).atStartOfDay();
+        return eventRepository.findEventByCalendarIdAndStartBetween(calendarId, start, end);
+    }
+
+    public Iterable<Event> findAllByCalendarToday(long calendarId) {
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.plusDays(1).atStartOfDay();
+        return eventRepository.findEventByCalendarIdAndStartBetween(calendarId, start, end);
     }
 }
