@@ -26,25 +26,26 @@ public class EventService {
     AttendeeRepository attendeeRepository;
 
     //Inviti per gli eventi da creare e implementare.
-    public Event create(long userid, long calendarId, EventDto eventDto) {
+    public void create(long userid, long calendarId, EventDto eventDto) {
         User user = userRepository.findById(userid).get();
         Calendar calendar = calendarRepository.findById(calendarId).get();
-        Event event = new Event();
-        event.setRecurring(eventDto.isRecurring());
-        event.setName(eventDto.getName());
-        event.setDescription(eventDto.getDescription());
-        event.setStart(eventDto.getStart());
-        event.setEnd(eventDto.getEnd());
-        event.getParticipants().add(user);
-        event.setCalendar(calendar);
-        calendar.getEvents().add(event);
-        user.getEvents().add(event);
-        eventRepository.save(event);
-        if (event.isRecurring()) {
+        if (eventDto.isRecurring()) {
             Recurrence recurrence = new Recurrence();
             recurrence.recurrenceForDaysPattern(user, calendar, eventDto, eventRepository);
+        } else if (eventDto.isRecurring() == false) {
+            Event event = new Event();
+            event.setRecurring(eventDto.isRecurring());
+            event.setName(eventDto.getName());
+            event.setDescription(eventDto.getDescription());
+            event.setStart(eventDto.getStart());
+            event.setEnd(eventDto.getEnd());
+            event.getParticipants().add(user);
+            event.setCalendar(calendar);
+            event.setRecurring(eventDto.isRecurring());
+            calendar.getEvents().add(event);
+            user.getEvents().add(event);
+            eventRepository.save(event);
         }
-        return event;
     }
 
 

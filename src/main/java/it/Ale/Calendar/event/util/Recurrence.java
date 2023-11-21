@@ -9,9 +9,10 @@ import jakarta.persistence.Embeddable;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Embeddable
@@ -20,7 +21,7 @@ public class Recurrence {
     private RecurrenceFormat frequency;
 
     //    @Enumerated(EnumType.STRING)
-    private Set<DayOfWeek> days = new HashSet<>();
+    private List<DayOfWeek> days = new ArrayList<>();
 
     private int count;
 
@@ -36,11 +37,11 @@ public class Recurrence {
         this.frequency = frequency;
     }
 
-    public Set<DayOfWeek> getDays() {
+    public List<DayOfWeek> getDays() {
         return days;
     }
 
-    public void setDays(Set<DayOfWeek> days) {
+    public void setDays(List<DayOfWeek> days) {
         this.days = days;
     }
 
@@ -54,69 +55,68 @@ public class Recurrence {
 
     public void recurrenceForDaysPattern(User user, Calendar calendar, EventDto eventDto, EventRepository eventRepository) {
         Recurrence recurring = eventDto.getRecurringDays();
-        int recurringCount = recurring.getCount() - 1;
-        LocalDateTime start = eventDto.getStart();
-        LocalDateTime end = eventDto.getEnd();
+        int recurringCount = recurring.getCount();
+        LocalDateTime start = eventDto.getStart().minusDays(1);
+        LocalDateTime end = eventDto.getEnd().minusDays(1);
         switch (recurring.getFrequency()) {
             case DAILY:
-                Set<DayOfWeek> days = recurring.getDays();
-                if (days != null) {
+                while (recurringCount > 0) {
+                    Event recurringEvent = new Event();
+                    recurringEvent.setName(eventDto.getName());
+                    recurringEvent.setDescription(eventDto.getDescription());
+                    recurringEvent.setStart(start.plusDays(1));
+                    recurringEvent.setEnd(end.plusDays(1));
+                    recurringEvent.setCalendar(calendar);
+                    calendar.getEvents().add(recurringEvent);
+                    user.getEvents().add(recurringEvent);
+                    eventRepository.save(recurringEvent);
+                    start = start.plusDays(1);
+                    end = end.plusDays(1);
+                    recurringCount--;
+                }
+                break;
+            case WEEKLY:
+                if (!recurring.getDays().isEmpty()) {
+                    List<DayOfWeek> dayOfWeekSet = recurring.getDays();
                     while (recurringCount > 0) {
-                        Event recurringEvent = new Event();
-                        for (DayOfWeek day : days) {
+                        for (DayOfWeek day : dayOfWeekSet) {
+                            Event recurringEvent = new Event();
                             recurringEvent.setName(eventDto.getName());
                             recurringEvent.setDescription(eventDto.getDescription());
-                            recurringEvent.setStart(start.with(TemporalAdjusters.next(day)));
-                            recurringEvent.setEnd(end.with(TemporalAdjusters.next(day)));
-                            start = start.with(TemporalAdjusters.next(day));
-                            end = end.with(TemporalAdjusters.next(day));
+                            recurringEvent.setStart(start.with(TemporalAdjusters.nextOrSame(day)));
+                            recurringEvent.setEnd(end.with(TemporalAdjusters.nextOrSame(day)));
                             recurringEvent.setCalendar(calendar);
                             calendar.getEvents().add(recurringEvent);
                             user.getEvents().add(recurringEvent);
                             eventRepository.save(recurringEvent);
+                            start = start.with(TemporalAdjusters.next(day));
+                            end = end.with(TemporalAdjusters.next(day));
                         }
                         recurringCount--;
                     }
-                } else {
+                } else
                     while (recurringCount > 0) {
                         Event recurringEvent = new Event();
                         recurringEvent.setName(eventDto.getName());
                         recurringEvent.setDescription(eventDto.getDescription());
                         recurringEvent.setStart(start.plusDays(1));
                         recurringEvent.setEnd(end.plusDays(1));
-                        start = start.plusDays(1);
-                        end = end.plusDays(1);
+                        start = start.plusWeeks(1);
+                        end = end.plusWeeks(1);
                         recurringEvent.setCalendar(calendar);
                         calendar.getEvents().add(recurringEvent);
                         user.getEvents().add(recurringEvent);
                         eventRepository.save(recurringEvent);
                         recurringCount--;
                     }
-                }
-                break;
-            case WEEKLY:
-                while (recurringCount > 0) {
-                    Event recurringEvent = new Event();
-                    recurringEvent.setName(eventDto.getName());
-                    recurringEvent.setDescription(eventDto.getDescription());
-                    recurringEvent.setStart(start.plusWeeks(1));
-                    recurringEvent.setEnd(end.plusWeeks(1));
-                    start = start.plusWeeks(1);
-                    end = end.plusWeeks(1);
-                    recurringEvent.setCalendar(calendar);
-                    calendar.getEvents().add(recurringEvent);
-                    user.getEvents().add(recurringEvent);
-                    eventRepository.save(recurringEvent);
-                    recurringCount--;
-                }
                 break;
             case MONTHLY:
                 while (recurringCount > 0) {
                     Event recurringEvent = new Event();
                     recurringEvent.setName(eventDto.getName());
                     recurringEvent.setDescription(eventDto.getDescription());
-                    recurringEvent.setStart(start.plusMonths(1));
-                    recurringEvent.setEnd(end.plusMonths(1));
+                    recurringEvent.setStart(start.plusDays(1));
+                    recurringEvent.setEnd(end.plusDays(1));
                     start = start.plusMonths(1);
                     end = end.plusMonths(1);
                     recurringEvent.setCalendar(calendar);
@@ -131,8 +131,8 @@ public class Recurrence {
                     Event recurringEvent = new Event();
                     recurringEvent.setName(eventDto.getName());
                     recurringEvent.setDescription(eventDto.getDescription());
-                    recurringEvent.setStart(start.plusYears(1));
-                    recurringEvent.setEnd(end.plusYears(1));
+                    recurringEvent.setStart(start.plusDays(1));
+                    recurringEvent.setEnd(end.plusDays(1));
                     start = start.plusYears(1);
                     end = end.plusYears(1);
                     recurringEvent.setCalendar(calendar);

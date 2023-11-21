@@ -33,11 +33,11 @@ public class EventController {
      */
     @PostMapping("/{userId}/{calendarId}")
     public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable long calendarId, @RequestBody EventDto eventDto) {
-        Event event = eventService.create(userId, calendarId, eventDto);
+         eventService.create(userId, calendarId, eventDto);
 //        if (event == null) {
 //            return ResponseEntity.badRequest().build();
 //        }
-        return ResponseEntity.ok().body(event);
+        return ResponseEntity.ok().body(eventDto);
     }
 
     @DeleteMapping("/{id}")
