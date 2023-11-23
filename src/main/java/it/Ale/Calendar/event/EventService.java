@@ -3,7 +3,7 @@ package it.Ale.Calendar.event;
 import it.Ale.Calendar.calendar.Calendar;
 import it.Ale.Calendar.calendar.CalendarRepository;
 import it.Ale.Calendar.event.util.Recurrence;
-import it.Ale.Calendar.user.AttendeeRepository;
+import it.Ale.Calendar.attendee.AttendeeRepository;
 import it.Ale.Calendar.user.User;
 import it.Ale.Calendar.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

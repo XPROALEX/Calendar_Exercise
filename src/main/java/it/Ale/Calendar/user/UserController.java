@@ -2,9 +2,9 @@ package it.Ale.Calendar.user;
 
 import it.Ale.Calendar.event.EventDto;
 import it.Ale.Calendar.calendar.Calendar;
-import it.Ale.Calendar.event.Event;
 import it.Ale.Calendar.calendar.CalendarService;
 import it.Ale.Calendar.event.EventService;
+import it.Ale.Calendar.user.util.ContactDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

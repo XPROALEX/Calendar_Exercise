@@ -1,6 +1,8 @@
 package it.Ale.Calendar.user;
 
 import it.Ale.Calendar.calendar.Calendar;
+import it.Ale.Calendar.user.util.ContactDto;
+import it.Ale.Calendar.user.util.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
