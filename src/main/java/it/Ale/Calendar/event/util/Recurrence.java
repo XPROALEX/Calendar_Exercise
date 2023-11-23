@@ -51,6 +51,7 @@ public class Recurrence {
     public void setCount(int count) {
         this.count = count;
     }
+
     /*
     recurrenceForDaysPattern
     days: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
@@ -63,27 +64,21 @@ public class Recurrence {
     only monthly repetitions without filtering for the days of the week
     frequency: YEARLY
     only yearly repetitions without filtering for the days of the week
-    ------
+    ----------------------------------------------------------------------------------------------------------
     start and end have "minusDays(1)" only to avoid problems with the creation of weekly events that exceeded days,
     when start and end are then added to events those days are restored
      */
-
-    public void recurrenceForDaysPattern(User user, Calendar calendar, EventDto eventDto, EventRepository eventRepository) {
+    public void recurrencePattern(User user, Calendar calendar, EventDto eventDto, EventRepository eventRepository) {
         Recurrence recurring = eventDto.getRecurringDays();
-        int recurringCount = recurring.getCount();
         LocalDateTime start = eventDto.getStart().minusDays(1);
         LocalDateTime end = eventDto.getEnd().minusDays(1);
+        int recurringCount = recurring.getCount();
         switch (recurring.getFrequency()) {
             case DAILY:
                 while (recurringCount > 0) {
-                    Event recurringEvent = new Event();
-                    recurringEvent.setName(eventDto.getName());
-                    recurringEvent.setDescription(eventDto.getDescription());
+                    Event recurringEvent = createRecurringEvent(user, calendar, eventDto);
                     recurringEvent.setStart(start.plusDays(1));
                     recurringEvent.setEnd(end.plusDays(1));
-                    recurringEvent.setCalendar(calendar);
-                    calendar.getEvents().add(recurringEvent);
-                    user.getEvents().add(recurringEvent);
                     eventRepository.save(recurringEvent);
                     start = start.plusDays(1);
                     end = end.plusDays(1);
@@ -95,14 +90,10 @@ public class Recurrence {
                     List<DayOfWeek> dayOfWeekSet = recurring.getDays();
                     while (recurringCount > 0) {
                         for (DayOfWeek day : dayOfWeekSet) {
-                            Event recurringEvent = new Event();
-                            recurringEvent.setName(eventDto.getName());
+                            Event recurringEvent = createRecurringEvent(user, calendar, eventDto);
                             recurringEvent.setDescription(eventDto.getDescription());
                             recurringEvent.setStart(start.with(TemporalAdjusters.nextOrSame(day)));
                             recurringEvent.setEnd(end.with(TemporalAdjusters.nextOrSame(day)));
-                            recurringEvent.setCalendar(calendar);
-                            calendar.getEvents().add(recurringEvent);
-                            user.getEvents().add(recurringEvent);
                             eventRepository.save(recurringEvent);
                             start = start.with(TemporalAdjusters.next(day));
                             end = end.with(TemporalAdjusters.next(day));
@@ -111,55 +102,52 @@ public class Recurrence {
                     }
                 } else
                     while (recurringCount > 0) {
-                        Event recurringEvent = new Event();
-                        recurringEvent.setName(eventDto.getName());
-                        recurringEvent.setDescription(eventDto.getDescription());
+                        Event recurringEvent = createRecurringEvent(user, calendar, eventDto);
                         recurringEvent.setStart(start.plusDays(1));
                         recurringEvent.setEnd(end.plusDays(1));
+                        eventRepository.save(recurringEvent);
                         start = start.plusWeeks(1);
                         end = end.plusWeeks(1);
-                        recurringEvent.setCalendar(calendar);
-                        calendar.getEvents().add(recurringEvent);
-                        user.getEvents().add(recurringEvent);
-                        eventRepository.save(recurringEvent);
                         recurringCount--;
                     }
                 break;
             case MONTHLY:
                 while (recurringCount > 0) {
-                    Event recurringEvent = new Event();
-                    recurringEvent.setName(eventDto.getName());
-                    recurringEvent.setDescription(eventDto.getDescription());
+                    Event recurringEvent = createRecurringEvent(user, calendar, eventDto);
                     recurringEvent.setStart(start.plusDays(1));
                     recurringEvent.setEnd(end.plusDays(1));
+                    eventRepository.save(recurringEvent);
                     start = start.plusMonths(1);
                     end = end.plusMonths(1);
-                    recurringEvent.setCalendar(calendar);
-                    calendar.getEvents().add(recurringEvent);
-                    user.getEvents().add(recurringEvent);
-                    eventRepository.save(recurringEvent);
                     recurringCount--;
                 }
                 break;
             case YEARLY:
                 while (recurringCount > 0) {
-                    Event recurringEvent = new Event();
-                    recurringEvent.setName(eventDto.getName());
-                    recurringEvent.setDescription(eventDto.getDescription());
+                    Event recurringEvent = createRecurringEvent(user, calendar, eventDto);
                     recurringEvent.setStart(start.plusDays(1));
                     recurringEvent.setEnd(end.plusDays(1));
+                    eventRepository.save(recurringEvent);
                     start = start.plusYears(1);
                     end = end.plusYears(1);
-                    recurringEvent.setCalendar(calendar);
-                    calendar.getEvents().add(recurringEvent);
-                    user.getEvents().add(recurringEvent);
-                    eventRepository.save(recurringEvent);
                     recurringCount--;
                 }
         }
     }
-}
 
+
+    public Event createRecurringEvent(User user, Calendar calendar, EventDto eventDto) {
+        Event event = new Event();
+        event.setName(eventDto.getName());
+        event.setDescription(eventDto.getDescription());
+        event.getParticipants().add(user);
+        event.setCalendar(calendar);
+        event.setRecurring(eventDto.isRecurring());
+        calendar.getEvents().add(event);
+        user.getEvents().add(event);
+        return event;
+    }
+}
 
 //prima versione
 //    public void recurrencePattern(User user, Calendar calendar, EventDto eventDto, EventRepository eventRepository) {
