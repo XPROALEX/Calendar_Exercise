@@ -5,6 +5,7 @@ import it.Ale.Calendar.event.Event;
 import it.Ale.Calendar.event.EventDto;
 import it.Ale.Calendar.event.EventRepository;
 import it.Ale.Calendar.user.User;
+import it.Ale.Calendar.user.UserRepository;
 import jakarta.persistence.Embeddable;
 
 import java.time.DayOfWeek;
@@ -76,7 +77,7 @@ public class Recurrence {
         switch (recurring.getFrequency()) {
             case DAILY:
                 while (recurringCount > 0) {
-                    Event recurringEvent = createRecurringEvent(user, calendar, eventDto);
+                    Event recurringEvent = createEvent(user, calendar, eventDto);
                     recurringEvent.setStart(start.plusDays(1));
                     recurringEvent.setEnd(end.plusDays(1));
                     eventRepository.save(recurringEvent);
@@ -90,7 +91,7 @@ public class Recurrence {
                     List<DayOfWeek> dayOfWeekSet = recurring.getDays();
                     while (recurringCount > 0) {
                         for (DayOfWeek day : dayOfWeekSet) {
-                            Event recurringEvent = createRecurringEvent(user, calendar, eventDto);
+                            Event recurringEvent = createEvent(user, calendar, eventDto);
                             recurringEvent.setDescription(eventDto.getDescription());
                             recurringEvent.setStart(start.with(TemporalAdjusters.nextOrSame(day)));
                             recurringEvent.setEnd(end.with(TemporalAdjusters.nextOrSame(day)));
@@ -102,7 +103,7 @@ public class Recurrence {
                     }
                 } else
                     while (recurringCount > 0) {
-                        Event recurringEvent = createRecurringEvent(user, calendar, eventDto);
+                        Event recurringEvent = createEvent(user, calendar, eventDto);
                         recurringEvent.setStart(start.plusDays(1));
                         recurringEvent.setEnd(end.plusDays(1));
                         eventRepository.save(recurringEvent);
@@ -113,7 +114,7 @@ public class Recurrence {
                 break;
             case MONTHLY:
                 while (recurringCount > 0) {
-                    Event recurringEvent = createRecurringEvent(user, calendar, eventDto);
+                    Event recurringEvent = createEvent(user, calendar, eventDto);
                     recurringEvent.setStart(start.plusDays(1));
                     recurringEvent.setEnd(end.plusDays(1));
                     eventRepository.save(recurringEvent);
@@ -124,7 +125,7 @@ public class Recurrence {
                 break;
             case YEARLY:
                 while (recurringCount > 0) {
-                    Event recurringEvent = createRecurringEvent(user, calendar, eventDto);
+                    Event recurringEvent = createEvent(user, calendar, eventDto);
                     recurringEvent.setStart(start.plusDays(1));
                     recurringEvent.setEnd(end.plusDays(1));
                     eventRepository.save(recurringEvent);
@@ -135,14 +136,14 @@ public class Recurrence {
         }
     }
 
-
-    public Event createRecurringEvent(User user, Calendar calendar, EventDto eventDto) {
+    public Event createEvent(User user, Calendar calendar, EventDto eventDto) {
         Event event = new Event();
         event.setName(eventDto.getName());
         event.setDescription(eventDto.getDescription());
         event.getParticipants().add(user);
         event.setCalendar(calendar);
         event.setRecurring(eventDto.isRecurring());
+        event.setRecurringDays(eventDto.getRecurringDays());
         calendar.getEvents().add(event);
         user.getEvents().add(event);
         return event;

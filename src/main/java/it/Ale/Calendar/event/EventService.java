@@ -38,17 +38,9 @@ public class EventService {
             Recurrence recurrence = new Recurrence();
             recurrence.recurrencePattern(user, calendar, eventDto, eventRepository);
         } else if (eventDto.isRecurring() == false) {
-            Event event = new Event();
-            event.setRecurring(eventDto.isRecurring());
-            event.setName(eventDto.getName());
-            event.setDescription(eventDto.getDescription());
+            Event event = new Recurrence().createEvent(user, calendar, eventDto);
             event.setStart(eventDto.getStart());
             event.setEnd(eventDto.getEnd());
-            event.getParticipants().add(user);
-            event.setCalendar(calendar);
-            event.setRecurring(eventDto.isRecurring());
-            calendar.getEvents().add(event);
-            user.getEvents().add(event);
             eventRepository.save(event);
         }
     }
@@ -80,7 +72,7 @@ public class EventService {
     Return all events for a calendar
      */
     public Iterable<Event> findAllByCalendar(long calendarId) {
-        return eventRepository.findEventByCalendarId(calendarId);
+        return eventRepository.findEventByCalendarIdOrderByStartAsc(calendarId);
     }
 
     /*
@@ -124,7 +116,7 @@ public class EventService {
     Return all events for participants
      */
     public Iterable<Event> findAllByParticipantId(long ParticipantId) {
-        return eventRepository.findEventByParticipantsId(ParticipantId);
+        return eventRepository.findEventByParticipantsIdOrderByStartAsc(ParticipantId);
     }
 
     /*

@@ -143,6 +143,4 @@ public class EventController {
     public ResponseEntity<?> findAllByParticipantIdInThisMonth(@PathVariable Long ParticipantId) {
         return ResponseEntity.ok().body(eventService.findAllByParticipantIdInThisMonth(ParticipantId));
     }
-
-
 }

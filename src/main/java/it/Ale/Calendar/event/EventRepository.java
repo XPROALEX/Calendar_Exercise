@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 @Repository
 
 public interface EventRepository extends JpaRepository<Event, Long> {
-    Iterable<Event> findEventByCalendarId(long calendarId);
+    Iterable<Event> findEventByCalendarIdOrderByStartAsc(long calendarId);
 
-    Iterable<Event> findEventByParticipantsId(long participantId);
+    Iterable<Event> findEventByParticipantsIdOrderByStartAsc(long participantId);
 
     Iterable<Event> findEventByCalendarIdAndStartBetweenOrderByStartAsc(long calendarId, LocalDateTime start, LocalDateTime end);
 
