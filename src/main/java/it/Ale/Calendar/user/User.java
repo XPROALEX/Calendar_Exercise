@@ -6,6 +6,8 @@ import it.Ale.Calendar.event.Event;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,7 +29,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Calendar> calendars = new HashSet<>();
+    private List<Calendar> calendars = new LinkedList<>();
 
     @JsonIgnore
     @ManyToMany(mappedBy = "participants", cascade = CascadeType.ALL)
@@ -74,11 +76,11 @@ public class User {
         this.password = password;
     }
 
-    public Set<Calendar> getCalendars() {
+    public List<Calendar> getCalendars() {
         return calendars;
     }
 
-    public void setCalendars(Set<Calendar> calendars) {
+    public void setCalendars(List<Calendar> calendars) {
         this.calendars = calendars;
     }
 

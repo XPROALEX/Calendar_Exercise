@@ -1,6 +1,7 @@
 package it.Ale.Calendar.user;
 
 
+import it.Ale.Calendar.calendar.Calendar;
 import it.Ale.Calendar.event.Event;
 import it.Ale.Calendar.event.util.Status;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ public class Attendee {
     @JoinColumn(name = "user_id")
     private User invitedUser;
     @Enumerated(EnumType.STRING)
-    private Status status= Status.PENDING;
+    private Status status = Status.PENDING;
 
     public Attendee() {
     }
@@ -53,5 +54,15 @@ public class Attendee {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void inviteParticipants(long[] participantIdArray, UserRepository userRepository) {
+        for (int i = 0; i < participantIdArray.length; i++) {
+            User participant = userRepository.findById(participantIdArray[i]).get();
+            event.getParticipants().add(participant);
+            participant.getEvents().add(event);
+            Calendar participantCalendar = participant.getCalendars().get(0);
+            participantCalendar.getEvents().add(event);
+        }
     }
 }

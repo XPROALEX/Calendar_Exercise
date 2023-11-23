@@ -134,8 +134,8 @@ public class Event {
         this.status = status;
     }
 
-    public void inviteParticipant(User user) {
-        this.participants.add(user);
-        user.getEvents().add(this);
-    }
+//    public void inviteParticipant(User user) {
+//        this.participants.add(user);
+//        user.getEvents().add(this);
+//    }
 }
