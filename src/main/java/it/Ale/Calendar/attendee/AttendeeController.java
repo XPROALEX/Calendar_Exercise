@@ -12,16 +12,30 @@ public class AttendeeController {
     AttendeeService attendeeService;
     /*
     Post invite to an event
-    url /attendee/{eventId}
+    url /attendee/event/{eventId}
     Json
     {
         "participantsId": [1,2,3]
     }
      */
 
-    @PostMapping("/invite/{eventId}")
+    @PostMapping("/event/{eventId}")
     public ResponseEntity<?> invite(@PathVariable long eventId, @RequestBody AttendeeDto attendeeDto) {
         attendeeService.sendAttendee(eventId, attendeeDto);
+        return ResponseEntity.ok().build();
+    }
+    /*
+    Put change status
+    url /attendee/{attendeeId}
+    Json
+    {
+        "status": "CONFIRMED", "status": "CANCELED", "status": "PENDING"
+    }
+     */
+
+    @PutMapping ("/{attendeeId}")
+    public ResponseEntity<?> changeStatus(@PathVariable long attendeeId, @RequestBody Attendee attendeeStatus){
+        attendeeService.changeStatus(attendeeId, attendeeStatus);
         return ResponseEntity.ok().build();
     }
 }

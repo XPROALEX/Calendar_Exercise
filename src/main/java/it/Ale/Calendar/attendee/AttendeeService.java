@@ -5,7 +5,6 @@ import it.Ale.Calendar.attendee.util.Status;
 import it.Ale.Calendar.calendar.Calendar;
 import it.Ale.Calendar.calendar.CalendarRepository;
 import it.Ale.Calendar.event.Event;
-import it.Ale.Calendar.event.EventDto;
 import it.Ale.Calendar.event.EventRepository;
 import it.Ale.Calendar.user.User;
 import it.Ale.Calendar.user.UserRepository;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 class AttendeeService {
@@ -65,6 +65,26 @@ class AttendeeService {
                 attendeeRepository.delete(existingAttendee);
                 break;
         }
+    }
+
+    Iterable<Attendee> getAllAttendeesByEvent(long eventId) {
+        return attendeeRepository.findAllAttendeeByEventId(eventId);
+    }
+
+    Iterable<Attendee> findAllAttendeeByInvitedUser_Id(long userId) {
+        return attendeeRepository.findAllAttendeeByInvitedUser_Id(userId);
+    }
+
+    Iterable<Attendee> findAllAttendeeByStatus(Status status) {
+        return attendeeRepository.findAllAttendeeByStatus(status);
+    }
+
+    Optional<Attendee> findById(long id) {
+        return attendeeRepository.findById(id);
+    }
+
+    Iterable<Attendee> findAll() {
+        return attendeeRepository.findAll();
     }
 }
 
