@@ -1,7 +1,9 @@
 package it.Ale.Calendar.attendee;
 
+import it.Ale.Calendar.attendee.util.AttendeeDto;
 import it.Ale.Calendar.attendee.util.Status;
 import it.Ale.Calendar.calendar.Calendar;
+import it.Ale.Calendar.calendar.CalendarRepository;
 import it.Ale.Calendar.event.Event;
 import it.Ale.Calendar.event.EventDto;
 import it.Ale.Calendar.event.EventRepository;
@@ -20,36 +22,34 @@ class AttendeeService {
     EventRepository eventRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    CalendarRepository calendarRepository;
 
-    public void sendAttendee(long eventId, EventDto eventDto) {
+    public void sendAttendee(long eventId, AttendeeDto attendeeDto) {
         if (eventRepository.findById(eventId).isEmpty()) {
             throw new IllegalArgumentException("Event not found");
         }
-        if (eventDto.getParticipantsId() == null || eventDto.getParticipantsId().length == 0) {
+        if (attendeeDto.getParticipantsId() == null || attendeeDto.getParticipantsId().length == 0) {
             throw new IllegalArgumentException("Select users to invite");
         }
         Event event = eventRepository.findById(eventId).get();
-        long[] participantsId = eventDto.getParticipantsId();
-        List<Attendee> attendeeList = new Attendee().inviteParticipants(participantsId, userRepository,event);
+        List<Attendee> attendeeList = new Attendee().inviteParticipants(attendeeDto, userRepository, event);
         attendeeRepository.saveAll(attendeeList);
     }
 
     public void changeStatus(long attendeeId, Attendee attendeeStatus) {
-        if (attendeeRepository.findById(attendeeId).isEmpty()) {
-            throw new IllegalArgumentException("Attendee not found");
-        }
-        if (attendeeStatus.getStatus() == null ) {
+        if (attendeeStatus.getStatus() == null) {
             throw new IllegalArgumentException("Select status");
         }
-        Attendee existingAttendee = attendeeRepository.findById(attendeeId).get();
+        Attendee existingAttendee = attendeeRepository.findById(attendeeId)
+                .orElseThrow(() -> new IllegalArgumentException("Attendee not found"));
         Event event = existingAttendee.getEvent();
-        User user= existingAttendee.getInvitedUser();
-        Calendar calendar=user.getCalendars().getFirst();
+        User user = existingAttendee.getInvitedUser();
+        Calendar calendar = user.getCalendars().getFirst();
         Status statusChanged = attendeeStatus.getStatus();
         switch (statusChanged) {
             case PENDING:
                 existingAttendee.setStatus(Status.PENDING);
-                attendeeRepository.save(existingAttendee);
                 break;
             case CONFIRMED:
                 existingAttendee.setStatus(Status.CONFIRMED);
@@ -59,6 +59,7 @@ class AttendeeService {
                 userRepository.save(user);
                 eventRepository.save(event);
                 attendeeRepository.save(existingAttendee);
+                calendarRepository.save(calendar);
                 break;
             case CANCELED:
                 attendeeRepository.delete(existingAttendee);

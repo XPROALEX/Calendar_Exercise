@@ -1,8 +1,8 @@
 package it.Ale.Calendar.attendee;
 
 
+import it.Ale.Calendar.attendee.util.AttendeeDto;
 import it.Ale.Calendar.attendee.util.Status;
-import it.Ale.Calendar.calendar.Calendar;
 import it.Ale.Calendar.event.Event;
 import it.Ale.Calendar.user.User;
 import it.Ale.Calendar.user.UserRepository;
@@ -61,13 +61,15 @@ public class Attendee {
         this.status = status;
     }
 
-    public List<Attendee> inviteParticipants(long[] participantIdArray, UserRepository userRepository, Event event) {
+    public List<Attendee> inviteParticipants(AttendeeDto attendeeDto, UserRepository userRepository, Event event) {
         List<Attendee> attendeeList = new ArrayList<>();
-        for (long participantId : participantIdArray) {
+        long[] participantsId = attendeeDto.getParticipantsId();
+        for (long participantId : participantsId) {
             User participant = userRepository.findById(participantId).get();
             Attendee attendee = new Attendee();
             attendee.setEvent(event);
             attendee.setInvitedUser(participant);
+            attendee.setStatus(Status.PENDING);
             attendeeList.add(attendee);
         }
         return attendeeList;
