@@ -2,9 +2,9 @@ package it.Ale.Calendar.user;
 
 import it.Ale.Calendar.event.EventDto;
 import it.Ale.Calendar.calendar.Calendar;
-import it.Ale.Calendar.event.Event;
 import it.Ale.Calendar.calendar.CalendarService;
 import it.Ale.Calendar.event.EventService;
+import it.Ale.Calendar.user.util.ContactDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -131,13 +131,16 @@ url /user
     Post Create Event
     url /user/{userId}/calendar/{calendarId}
     Json
+/*
+    Post Create Event
+    url /user/{userId}/calendar/{calendarId}
+    Json
   {
   "name": "eventName",
   "description": "eventDescription",
   "start": "16/11/2023 10:00",
   "end": "16/11/2023 11:30",
   "recurring": true or false,
-  "participantsId": [1, 2, 3],---->to be implemented
   "recurringDays": {
     "frequency": "DAILY","WEEKLY","MONTHLY","YEARLY",
     "days": "MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY",

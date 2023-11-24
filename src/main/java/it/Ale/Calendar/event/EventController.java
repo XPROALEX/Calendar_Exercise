@@ -27,6 +27,9 @@ public class EventController {
           "count": 5
         }
       }
+
+      participantsId -->  implementato in attendee e
+       non qui per ora si crea l'evento e poi si invitano le persone
      */
     @PostMapping("user/{userId}/calendar/{calendarId}")
     public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable long calendarId, @RequestBody EventDto eventDto) {

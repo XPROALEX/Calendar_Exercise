@@ -1,15 +1,17 @@
-package it.Ale.Calendar.user;
+package it.Ale.Calendar.user.util;
 
 import it.Ale.Calendar.calendar.Calendar;
 import it.Ale.Calendar.event.Event;
+import it.Ale.Calendar.user.util.ContactDto;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class UserDto {
     private String name;
     private String email;
-    private Set<Calendar> calendars;
+    private List<Calendar> calendars;
     private Set<ContactDto> contacts = new HashSet<>();
     private Set<Event> events = new HashSet<>();
 
@@ -32,11 +34,11 @@ public class UserDto {
         this.email = email;
     }
 
-    public Set<Calendar> getCalendars() {
+    public List<Calendar> getCalendars() {
         return calendars;
     }
 
-    public void setCalendars(Set<Calendar> calendars) {
+    public void setCalendars(List<Calendar> calendars) {
         this.calendars = calendars;
     }
 

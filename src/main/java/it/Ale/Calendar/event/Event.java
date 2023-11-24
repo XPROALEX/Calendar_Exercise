@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.Ale.Calendar.calendar.Calendar;
 import it.Ale.Calendar.event.util.Recurrence;
-import it.Ale.Calendar.event.util.Status;
+import it.Ale.Calendar.attendee.Attendee;
 import it.Ale.Calendar.user.User;
 import jakarta.persistence.*;
 
@@ -46,9 +46,9 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> participants = new HashSet<>();
 
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Attendee> attendees = new HashSet<>();
 
     public Event() {
     }
@@ -126,16 +126,4 @@ public class Event {
         this.recurringDays = recurringDays;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-//    public void inviteParticipant(User user) {
-//        this.participants.add(user);
-//        user.getEvents().add(this);
-//    }
 }

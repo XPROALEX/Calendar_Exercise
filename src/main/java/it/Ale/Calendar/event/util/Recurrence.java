@@ -5,7 +5,6 @@ import it.Ale.Calendar.event.Event;
 import it.Ale.Calendar.event.EventDto;
 import it.Ale.Calendar.event.EventRepository;
 import it.Ale.Calendar.user.User;
-import it.Ale.Calendar.user.UserRepository;
 import jakarta.persistence.Embeddable;
 
 import java.time.DayOfWeek;
@@ -150,54 +149,3 @@ public class Recurrence {
     }
 }
 
-//prima versione
-//    public void recurrencePattern(User user, Calendar calendar, EventDto eventDto, EventRepository eventRepository) {
-//        Recurrence recurring = eventDto.getRecurringDays();
-//        int recurringCount = recurring.getCount() - 1;
-//        DayOfWeek dayOfWeek = recurring.getDay();
-//        LocalDateTime start = eventDto.getStart();
-//        LocalDateTime end = eventDto.getEnd();
-//        while (recurringCount > 0) {
-//            Event recurringEvent = new Event();
-//            recurringEvent.setName(eventDto.getName());
-//            recurringEvent.setDescription(eventDto.getDescription());
-//            switch (recurring.getFrequency()) {
-//                case DAILY:
-//                    if (dayOfWeek != null) {
-//                        recurringEvent.setStart(start.with(TemporalAdjusters.next(dayOfWeek)));
-//                        recurringEvent.setEnd(end.with(TemporalAdjusters.next(dayOfWeek)));
-//                        start = start.with(TemporalAdjusters.next(dayOfWeek));
-//                        end = end.with(TemporalAdjusters.next(dayOfWeek));
-//                    } else {
-//                        recurringEvent.setStart(start.plusDays(1));
-//                        recurringEvent.setEnd(end.plusDays(1));
-//                        start = start.plusDays(1);
-//                        end = end.plusDays(1);
-//                    }
-//                    break;
-//                case WEEKLY:
-//                    recurringEvent.setStart(start.plusWeeks(1));
-//                    recurringEvent.setEnd(end.plusWeeks(1));
-//                    start = start.plusWeeks(1);
-//                    end = end.plusWeeks(1);
-//                    break;
-//                case MONTHLY:
-//                    recurringEvent.setStart(start.plusMonths(1));
-//                    recurringEvent.setEnd(end.plusMonths(1));
-//                    start = start.plusMonths(1);
-//                    end = end.plusMonths(1);
-//                    break;
-//                case YEARLY:
-//                    recurringEvent.setStart(start.plusYears(1));
-//                    recurringEvent.setEnd(end.plusYears(1));
-//                    start = start.plusYears(1);
-//                    end = end.plusYears(1);
-//            }
-//            recurringEvent.getParticipants().add(user);
-//            recurringEvent.setCalendar(calendar);
-//            calendar.getEvents().add(recurringEvent);
-//            user.getEvents().add(recurringEvent);
-//            eventRepository.save(recurringEvent);
-//            recurringCount--;
-//        }
-//    }
