@@ -15,8 +15,6 @@ public class Calendar {
     private Long id;
 
     @Column(nullable = false)
-//    @Size(min = 2, max = 10)
-//    @Pattern(regexp = "^[^\\s].*[^\\s]$")
     private String name;
 
     private String description;

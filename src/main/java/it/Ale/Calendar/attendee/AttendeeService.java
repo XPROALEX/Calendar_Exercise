@@ -62,7 +62,9 @@ class AttendeeService {
                 calendarRepository.save(calendar);
                 break;
             case CANCELED:
-                attendeeRepository.delete(existingAttendee);
+                attendeeRepository.save(existingAttendee);
+                //attendeeRepository.delete(existingAttendee);
+                //l'idea era di eliminare l'invito ma pensandoci cambierei soltanto lo status e al resto ci pensa il front ender
                 break;
         }
     }

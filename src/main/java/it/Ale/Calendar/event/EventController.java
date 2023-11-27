@@ -20,7 +20,6 @@ public class EventController {
         "start": "16/11/2023 10:00",
         "end": "16/11/2023 11:30",
         "recurring": true or false,
-        "participantsId": [1, 2, 3],
         "recurringDays": {
           "frequency": "DAILY","WEEKLY","MONTHLY","YEARLY",
           "days": "MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY",
@@ -28,8 +27,7 @@ public class EventController {
         }
       }
 
-      participantsId -->  implementato in attendee e
-       non qui per ora si crea l'evento e poi si invitano le persone
+si crea l'evento e poi si invitano le persone tramite attendeeController
      */
     @PostMapping("user/{userId}/calendar/{calendarId}")
     public ResponseEntity<?> createEvent(@PathVariable long userId, @PathVariable long calendarId, @RequestBody EventDto eventDto) {

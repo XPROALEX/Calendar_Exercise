@@ -26,7 +26,6 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-//    @Pattern(message = "Invalid password", regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
     private String password;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
