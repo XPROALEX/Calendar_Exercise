@@ -1,6 +1,7 @@
 package it.Ale.Calendar.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.Ale.Calendar.attendee.Attendee;
 import it.Ale.Calendar.calendar.Calendar;
 import it.Ale.Calendar.event.Event;
 import jakarta.persistence.*;
@@ -40,6 +41,10 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_id"))
     private Set<User> contacts;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "invitedUser",cascade = CascadeType.ALL)
+    private Set<Attendee> attendees = new HashSet<>();
 
     public User() {
     }
